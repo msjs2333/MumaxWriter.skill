@@ -97,6 +97,15 @@ python tests\validate_release.py
 
 示例和静态检查只用于 skill 验证和脚本卫生检查，不证明物理正确性、数值收敛或论文级可用性。
 
+## 未来规划
+
+后续版本计划方向：
+
+- 评估 Python 侧数据处理工作流，包括将 Ubermag 生态及相关分析工具作为可选方案。
+- 增加 mumax+ 兼容能力；当前仍以 mumax3 为主，长期方向是逐步转向以 mumax+ 为主，同时保留 mumax3 支持。
+- 提供从现有 mumax3 `.mx3` 脚本迁移到 mumax+ 的辅助工作流，包括 API 映射、行为差异和验证 checklist。
+- 扩展 OVF/table 后处理示例，例如频谱、模式图、磁结构位置追踪和参数扫描汇总。
+
 ## 参考文档
 
 - [发布说明](docs/release_notes_v0.1.0.md)

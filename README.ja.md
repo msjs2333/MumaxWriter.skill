@@ -95,6 +95,15 @@ python tests\validate_release.py
 
 Examples and static checks are for skill validation and script hygiene. They do not prove physical correctness, numerical convergence, or publication readiness.
 
+## Future Roadmap
+
+Planned directions for later releases:
+
+- Evaluate optional Python-side data handling workflows, including possible use of the Ubermag ecosystem and related analysis tools.
+- Add mumax+ compatibility, with the long-term direction of making mumax+ the primary target while keeping mumax3 support.
+- Provide assisted migration workflows from existing mumax3 `.mx3` scripts to mumax+, including API mapping notes, behavior differences, and validation checklists.
+- Expand postprocessing examples for OVF/table output, spectra, mode maps, texture tracking, and sweep summaries.
+
 ## References
 
 - [Release notes](docs/release_notes_v0.1.0.md)
