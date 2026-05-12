@@ -1,0 +1,25 @@
+{
+  "nx": 128,
+  "ny": 64,
+  "nz": 1,
+  "cell_x": "4e-9",
+  "cell_y": "4e-9",
+  "cell_z": "2e-9",
+  "region_split_x": 0,
+  "regions_ovf": "regions.ovf",
+  "Msat_region1": "800e3",
+  "Msat_region2": "650e3",
+  "Aex_region1": "13e-12",
+  "Aex_region2": "10e-12",
+  "alpha_region1": 0.02,
+  "alpha_region2": 0.04,
+  "m_init_x": 1,
+  "m_init_y": 0,
+  "m_init_z": 0,
+  "B_ext_x": "5e-3",
+  "B_ext_y": 0,
+  "B_ext_z": 0,
+  "table_period": "1e-12",
+  "relaxed_state_ovf": "m_region_relaxed.ovf"
+}
+

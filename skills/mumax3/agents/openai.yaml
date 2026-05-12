@@ -1,0 +1,7 @@
+﻿interface:
+  display_name: "mumax3"
+  short_description: "Write and parameterize mumax3 scripts"
+  default_prompt: "Use $mumax3 to write or review a mumax3 .mx3 simulation script."
+
+policy:
+  allow_implicit_invocation: true

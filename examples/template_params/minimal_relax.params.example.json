@@ -1,0 +1,17 @@
+{
+  "nx": 128,
+  "ny": 64,
+  "nz": 1,
+  "cell_x": "4e-9",
+  "cell_y": "4e-9",
+  "cell_z": "2e-9",
+  "Msat": "800e3",
+  "Aex": "13e-12",
+  "alpha": 0.02,
+  "m_init_x": 1,
+  "m_init_y": 0,
+  "m_init_z": 0,
+  "table_period": "1e-12",
+  "relaxed_state_ovf": "m_relaxed.ovf"
+}
+

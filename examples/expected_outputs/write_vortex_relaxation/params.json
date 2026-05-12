@@ -1,0 +1,28 @@
+{
+  "case_id": "generic_vortex_relax",
+  "description": "Generic circular disk vortex relaxation smoke test.",
+  "geometry": {
+    "diameter_m": 2e-7,
+    "thickness_m": 1e-8
+  },
+  "mesh": {
+    "nx": 128,
+    "ny": 128,
+    "nz": 4
+  },
+  "material": {
+    "Msat_A_per_m": 800000,
+    "Aex_J_per_m": 1.3e-11,
+    "alpha": 0.05
+  },
+  "initial_state": "Vortex(1, 1)",
+  "script": "script.mx3",
+  "expected_output_directory": "script.out",
+  "expected_files": [
+    "geometry.ovf",
+    "m_initial.ovf",
+    "m_relaxed.ovf",
+    "table.txt"
+  ]
+}
+

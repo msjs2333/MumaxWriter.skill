@@ -1,0 +1,30 @@
+// Generic circular-disk vortex relaxation.
+OutputFormat = OVF2_TEXT
+
+nx := 128
+ny := 128
+nz := 4
+diameter := 200e-9
+thickness := 10e-9
+SetGridSize(nx, ny, nz)
+SetCellSize(diameter/nx, diameter/ny, thickness/nz)
+SetGeom(Cylinder(diameter, thickness))
+SaveAs(geom, "geometry.ovf")
+
+Msat = 800e3
+Aex = 13e-12
+alpha = 0.05
+
+m = Vortex(1, 1)
+SaveAs(m, "m_initial.ovf")
+
+TableAdd(m)
+TableAdd(E_total)
+TableAdd(MaxAngle)
+TableAutoSave(2e-12)
+
+Relax()
+SaveAs(m, "m_relaxed.ovf")
+SaveAs(B_eff, "B_eff_relaxed.ovf")
+TableSave()
+

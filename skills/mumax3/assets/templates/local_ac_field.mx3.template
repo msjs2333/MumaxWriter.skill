@@ -1,0 +1,59 @@
+// Generic local AC-field dynamics template.
+// Replace all placeholder tokens before running with mumax3.
+
+// Output format.
+OutputFormat = OVF2_TEXT
+
+// Mesh.
+nx := {{nx}}
+ny := {{ny}}
+nz := {{nz}}
+cell_x := {{cell_x}}
+cell_y := {{cell_y}}
+cell_z := {{cell_z}}
+SetGridSize(nx, ny, nz)
+SetCellSize(cell_x, cell_y, cell_z)
+
+// Geometry.
+length_x := cell_x*nx
+length_y := cell_y*ny
+SetGeom(Rect(length_x, length_y))
+
+// Material.
+Msat = {{Msat}}
+Aex = {{Aex}}
+alpha = {{alpha}}
+
+// Initial state.
+m = Uniform({{m_init_x}}, {{m_init_y}}, {{m_init_z}})
+
+// Static field and relaxation stage.
+B_ext = Vector({{bias_Bx}}, {{bias_By}}, {{bias_Bz}})
+TableAdd(m)
+TableAutoSave({{table_period}})
+Relax()
+SaveAs(m, "{{static_state_ovf}}")
+
+// Local AC field.
+source := NewVectorMask(nx, ny, nz)
+for i:=0; i<nx; i++{
+    for j:=0; j<ny; j++{
+        for k:=0; k<nz; k++{
+            r := Index2Coord(i, j, k)
+            x := r.X()
+            if abs(x-({{source_center_x}})) < {{source_half_width}} {
+                source.SetVector(i, j, k, Vector({{source_dir_x}}, {{source_dir_y}}, {{source_dir_z}}))
+            }
+        }
+    }
+}
+
+B_ext.Add(source, {{source_amplitude}}*sin(2*pi*{{source_frequency}}*t))
+
+// Output.
+AutoSave(m, {{snapshot_period}})
+
+// Run stage.
+Run({{run_time}})
+SaveAs(m, "{{final_state_ovf}}")
+TableSave()

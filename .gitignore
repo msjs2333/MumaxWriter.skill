@@ -1,0 +1,39 @@
+# OS and editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Python caches and local environments
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# mumax3/generated simulation outputs
+*.out/
+runs/
+results/
+logs/
+*.ovf
+*.omf
+*.odt
+*.png
+*.jpg
+*.jpeg
+*.tif
+*.tiff
+
+# Local research archives not intended for distribution.
+# Keep the maintained runtime references under skills/mumax3/references/.
+docs/research/external_reference_cache/
+docs/research/mumax3_script_language_and_api.md
+notes_*.md
+*_analysis.md
+parameter_sweep_planning_tasklist.md

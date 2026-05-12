@@ -1,0 +1,37 @@
+// Generic thin-film relaxation template.
+// Replace all placeholder tokens before running with mumax3.
+
+// Output format.
+OutputFormat = OVF2_TEXT
+
+// Mesh.
+nx := {{nx}}
+ny := {{ny}}
+nz := {{nz}}
+cell_x := {{cell_x}}
+cell_y := {{cell_y}}
+cell_z := {{cell_z}}
+SetGridSize(nx, ny, nz)
+SetCellSize(cell_x, cell_y, cell_z)
+
+// Geometry.
+length_x := cell_x*nx
+length_y := cell_y*ny
+SetGeom(Rect(length_x, length_y))
+
+// Material.
+Msat = {{Msat}}
+Aex = {{Aex}}
+alpha = {{alpha}}
+
+// Initial state.
+m = Uniform({{m_init_x}}, {{m_init_y}}, {{m_init_z}})
+
+// Output.
+TableAdd(m)
+TableAutoSave({{table_period}})
+
+// Run stage.
+Relax()
+SaveAs(m, "{{relaxed_state_ovf}}")
+TableSave()

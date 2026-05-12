@@ -1,0 +1,31 @@
+{
+  "case_id": "generic_dmi_skyrmion_relax",
+  "description": "Generic ultrathin film interfacial-DMI skyrmion relaxation smoke test.",
+  "geometry": {
+    "length_m": 2.56e-7,
+    "width_m": 2.56e-7,
+    "thickness_m": 1e-9
+  },
+  "mesh": {
+    "nx": 128,
+    "ny": 128,
+    "nz": 1
+  },
+  "material": {
+    "Msat_A_per_m": 580000,
+    "Aex_J_per_m": 1.5e-11,
+    "Ku1_J_per_m3": 800000,
+    "Dind_J_per_m2": 0.003,
+    "alpha": 0.3
+  },
+  "initial_state": "NeelSkyrmion(1, 1)",
+  "script": "script.mx3",
+  "expected_output_directory": "script.out",
+  "expected_files": [
+    "m_initial.ovf",
+    "m_relaxed.ovf",
+    "B_eff_relaxed.ovf",
+    "table.txt"
+  ]
+}
+

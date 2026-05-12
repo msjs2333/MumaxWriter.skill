@@ -1,0 +1,43 @@
+{
+  "case_id": "case_0001_field_m005mT_freq_005GHz",
+  "geometry": {
+    "length_m": 7.68e-7,
+    "width_m": 1.92e-7,
+    "thickness_m": 2e-9
+  },
+  "mesh": {
+    "nx": 256,
+    "ny": 64,
+    "nz": 1
+  },
+  "material": {
+    "Msat_A_per_m": 800000,
+    "Aex_J_per_m": 1.3e-11,
+    "alpha": 0.01
+  },
+  "field_mT": -5,
+  "field_T": -0.005,
+  "frequency_GHz": 5,
+  "frequency_Hz": 5000000000,
+  "excitation": {
+    "amplitude_T": 0.001,
+    "source_x_cells": 8
+  },
+  "dynamics": {
+    "run_time_s": 2e-9,
+    "table_period_s": 5e-12,
+    "snapshot_period_s": 2e-11
+  },
+  "scripts": {
+    "relax": "relax.mx3",
+    "dynamics": "dynamics.mx3"
+  },
+  "expected_output_directories": [
+    "relax.out",
+    "dynamics.out"
+  ],
+  "logs": {
+    "stdout": "logs/mumax3.stdout.txt",
+    "stderr": "logs/mumax3.stderr.txt"
+  }
+}

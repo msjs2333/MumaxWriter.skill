@@ -1,0 +1,33 @@
+// Minimal generic thin-film relaxation.
+OutputFormat = OVF2_TEXT
+
+// Mesh and geometry.
+nx := 128
+ny := 64
+nz := 1
+Lx := 512e-9
+Ly := 256e-9
+Lz := 2e-9
+SetGridSize(nx, ny, nz)
+SetCellSize(Lx/nx, Ly/ny, Lz/nz)
+SetGeom(Rect(Lx, Ly))
+
+// Material.
+Msat = 800e3
+Aex = 13e-12
+alpha = 0.02
+
+// Initial state.
+m = Uniform(1, 0, 0)
+SaveAs(m, "m_initial.ovf")
+
+// Output and relaxation.
+TableAdd(m)
+TableAdd(E_total)
+TableAdd(MaxAngle)
+TableAutoSave(1e-12)
+
+Relax()
+SaveAs(m, "m_relaxed.ovf")
+SaveAs(B_eff, "B_eff_relaxed.ovf")
+TableSave()

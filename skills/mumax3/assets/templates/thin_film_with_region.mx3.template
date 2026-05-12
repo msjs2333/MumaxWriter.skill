@@ -1,0 +1,50 @@
+// Generic region-aware thin-film relaxation template.
+// Replace all placeholder tokens before running with mumax3.
+
+// Output format.
+OutputFormat = OVF2_TEXT
+
+// Mesh.
+nx := {{nx}}
+ny := {{ny}}
+nz := {{nz}}
+cell_x := {{cell_x}}
+cell_y := {{cell_y}}
+cell_z := {{cell_z}}
+SetGridSize(nx, ny, nz)
+SetCellSize(cell_x, cell_y, cell_z)
+
+// Geometry.
+length_x := cell_x*nx
+length_y := cell_y*ny
+SetGeom(Rect(length_x, length_y))
+
+// Regions.
+// region 1 is x < {{region_split_x}}; region 2 is x >= {{region_split_x}}.
+DefRegion(1, XRange(-length_x/2, {{region_split_x}}))
+DefRegion(2, XRange({{region_split_x}}, length_x/2))
+SaveAs(regions, "{{regions_ovf}}")
+
+// Material.
+Msat.SetRegion(1, {{Msat_region1}})
+Msat.SetRegion(2, {{Msat_region2}})
+Aex.SetRegion(1, {{Aex_region1}})
+Aex.SetRegion(2, {{Aex_region2}})
+alpha.SetRegion(1, {{alpha_region1}})
+alpha.SetRegion(2, {{alpha_region2}})
+
+// Initial state.
+m = Uniform({{m_init_x}}, {{m_init_y}}, {{m_init_z}})
+
+// Field.
+B_ext = Vector({{B_ext_x}}, {{B_ext_y}}, {{B_ext_z}})
+
+// Output.
+TableAdd(m.Region(1))
+TableAdd(m.Region(2))
+TableAutoSave({{table_period}})
+
+// Run stage.
+Relax()
+SaveAs(m, "{{relaxed_state_ovf}}")
+TableSave()
