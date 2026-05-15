@@ -47,6 +47,9 @@ GO_PACKAGE_SELECTORS = [
 ASSIGN_RE = re.compile(r"(?<![<>=!:+*/%^-])(:=|=)(?!=)")
 SHORT_DECL_RE = re.compile(r"^\s*([A-Za-z_][A-Za-z0-9_]*)\s*:=")
 FOR_RE = re.compile(r"^\s*for\b")
+SET_SOLVER_EULER_RE = re.compile(r"\bsetsolver\s*\(\s*1\s*\)", re.IGNORECASE)
+FIXDT_ASSIGN_RE = re.compile(r"\bfixdt\s*=", re.IGNORECASE)
+EXT_API_RE = re.compile(r"\bext_[A-Za-z0-9_]*", re.IGNORECASE)
 
 FALLBACK_BUILTIN_IDENTIFIERS = {
     "aex",
@@ -143,6 +146,7 @@ def check_text(path: Path, text: str) -> list[str]:
     clean_lines: list[str] = []
     in_block = False
     block_stack: list[bool] = []
+    euler_solver_lines: list[int] = []
 
     for line_no, raw in enumerate(text.splitlines(), start=1):
         clean, in_block = strip_strings_and_comments(raw, in_block)
@@ -182,6 +186,13 @@ def check_text(path: Path, text: str) -> list[str]:
         if "tableaddvar" in clean.lower() and in_for_block:
             warn(warnings, path, line_no, "`TableAddVar` adds table columns; avoid calling it inside loops, use `TableSave` for rows")
 
+        if SET_SOLVER_EULER_RE.search(clean):
+            euler_solver_lines.append(line_no)
+
+        ext_match = EXT_API_RE.search(clean)
+        if ext_match:
+            warn(warnings, path, line_no, f"`{ext_match.group(0)}` is an extension API; confirm version-specific behavior against official docs and the local mumax3 build")
+
         is_for_open = bool(FOR_RE.match(stripped))
         for ch in stripped[leading_closes:]:
             if ch == "{":
@@ -193,11 +204,15 @@ def check_text(path: Path, text: str) -> list[str]:
     clean_text = "\n".join(clean_lines)
     has_mesh = ("SetGridSize" in clean_text and "SetCellSize" in clean_text) or "SetMesh" in clean_text
     has_output = any(token in clean_text for token in ("Save(", "SaveAs(", "AutoSave(", "TableAutoSave(", "TableSave(", "Snapshot("))
+    has_fixdt = bool(FIXDT_ASSIGN_RE.search(clean_text))
 
     if not has_mesh:
         warn(warnings, path, None, "missing obvious mesh setup (`SetGridSize` + `SetCellSize`, or `SetMesh`)")
     if not has_output:
         warn(warnings, path, None, "missing obvious output pattern (`Save`, `SaveAs`, `AutoSave`, `TableAutoSave`, or `TableSave`)")
+    if euler_solver_lines and not has_fixdt:
+        for line_no in euler_solver_lines:
+            warn(warnings, path, line_no, "`SetSolver(1)` selects Euler and requires an explicit `FixDt = ...`")
 
     return warnings
 

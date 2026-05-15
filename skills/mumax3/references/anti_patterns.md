@@ -64,6 +64,7 @@ B_ext.Add(mask, value)
 
 - Regions are mutually exclusive cell labels. Later region definitions can overwrite earlier intent.
 - Save `regions` when debugging spatial assignments.
+- Do not use `.Region(...)`, `.Comp(...)`, or `Crop*` as substitutes for `DefRegion` or `SetGeom`; they select output or averages, not physical material regions.
 - Do not assume output files land in the working directory; mumax3 creates an output directory for a script run.
 - Include at least one final `Save`/`SaveAs` or an autosave/table schedule for scripts meant to produce data.
 - Treat `TableAdd` and `TableAddVar` as setup calls that add table columns. Do not use `TableAddVar` inside a hysteresis or parameter loop to record per-step scalar values; use `TableSave` inside the loop and compute derived columns from saved quantities during postprocessing.
@@ -92,3 +93,43 @@ for i:=0; i<=10; i++{
 }
 ```
 
+## Run-Stage Traps
+
+- Do not use `Relax()` as a substitute for driven dynamics. Relaxation disables precession and does not advance simulation time.
+- Do not start `Minimize()` from a random or very high-energy state when `Relax()` is the robust first stage.
+- Do not select Euler with `SetSolver(1)` unless the script also sets an explicit `FixDt`.
+
+Risky:
+
+```go
+m = RandomMag()
+Minimize()
+```
+
+Safer:
+
+```go
+m = RandomMag()
+Relax()
+Minimize()
+```
+
+Risky:
+
+```go
+SetSolver(1)
+Run(1e-9)
+```
+
+Safer:
+
+```go
+SetSolver(1)
+FixDt = 1e-15
+Run(1e-9)
+```
+
+## Extension API Traps
+
+- Treat `ext_*` APIs as version-sensitive. Confirm them against the official API for the target mumax3 version and local executable before relying on them.
+- Do not hide an extension assumption in a generic helper name; keep the extension call visible in the script or metadata.

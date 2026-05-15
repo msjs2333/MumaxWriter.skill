@@ -168,6 +168,12 @@ Cross-check identifiers: `Relax`, `Minimize`, `Run`, `RunWhile`, `Steps`, and
 time quantities are listed in `api_index.md#running-and-solver-control` and
 `api_full.md#running`.
 
+Official API guidance treats `Relax()` as a relaxation helper that disables
+precession and does not advance `t`, while `Minimize()` is recommended for
+hysteresis-style neighboring states. The official examples use `Relax()` for a
+random high-energy starting state, then `Minimize()` inside the hysteresis field
+loop.
+
 ## Solver Control
 
 The default adaptive solver is usually appropriate. Only set solver controls
@@ -233,6 +239,10 @@ derived value changes at each sweep point and is awkward to express as a
 mumax3 scalar function, save the underlying quantities and compute the derived
 column in Python.
 
+This follows the official hysteresis example: `TableAdd(B_ext)` is called once
+before the field loops, and each loop iteration updates `B_ext`, calls
+`Minimize()`, then calls `TableSave()`.
+
 Recommended field-loop pattern:
 
 ```go
@@ -266,10 +276,17 @@ TableAdd(m.Region(1))
 SaveAs(m.Comp(2), "mz_final.ovf")
 ```
 
+Region/component/crop methods shape output and averages; they do not define
+material regions or change the simulated geometry. Use `DefRegion` and
+region-specific material assignments for physical regions, then use
+`.Region(...)`, `.Comp(...)`, or `Crop*` only to select what is saved or added
+to the table.
+
 Cross-check identifiers: `LoadFile`, `Save`, `SaveAs`, `AutoSave`, `TableAdd`,
 `TableAddVar`, `TableAutoSave`, and output quantities are listed in
 `api_index.md#scheduling-and-saving`, `api_index.md#output-quantities`,
 `api_full.md#scheduling-output`, and `api_full.md#output-quantities`.
+Cropping helpers are listed in `api_full.md#slicing-and-dicing-output`.
 
 ## Common Quantities To Monitor
 
@@ -386,6 +403,10 @@ boundary behavior is part of the intended model.
 
 Cross-check in `api_full.md#moving-simulation-window` and the official API.
 Extension APIs can be version-sensitive.
+
+Treat every `ext_*` name as version-sensitive. Before using an extension in a
+generated script, confirm it in the official API for the target mumax3 version
+and make the modeling assumption explicit in the script or case metadata.
 
 ## Custom Quantities
 

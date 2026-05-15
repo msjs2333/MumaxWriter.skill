@@ -7,6 +7,7 @@ Use this reference when a task touches advanced mumax3 features, version-sensiti
 Runtime references in this skill target the official mumax3.12 API page. For older installations, confirm identifiers against the matching official API version before using advanced features.
 
 Official API: <https://mumax.github.io/api.html>
+Official examples: <https://mumax.github.io/examples.html>
 
 ## Verified Environment
 
@@ -33,6 +34,16 @@ Check `api_full.md` and official docs before using:
 - Slicing/cropping helpers beyond simple `SaveAs`.
 - Thermal noise and random seeding.
 - Magnetoelastic or extension APIs.
+
+## Official Semantic Anchors
+
+The following behavior is treated as baseline guidance for this skill:
+
+- Table output: official API documents `TableAdd` as adding a quantity column, `TableAddVar` as adding a user-defined variable column, and `TableSave` as appending one row. The official hysteresis example calls `TableAdd(B_ext)` before loops and `tablesave()` inside each field step.
+- Built-ins: official examples use built-ins such as `mu0`, `pi`, `t`, and runtime quantities directly. Do not redeclare these names with `:=`.
+- Running stages: official API describes `Relax()` as a relaxation helper where precession is disabled and simulation time `t` does not advance; `Minimize()` is well suited to nearby hysteresis states; `Run()` advances dynamics.
+- Solver control: Euler (`SetSolver(1)`) is only appropriate with an explicit fixed time step through `FixDt`.
+- Extension APIs: `ext_*` names are advanced/version-sensitive and should be checked against the exact installed mumax3 version before use.
 
 ## Python Ecosystem Boundary
 
