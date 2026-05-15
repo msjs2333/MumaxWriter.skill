@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+title: "MumaxWriter.skill: An agent skill for mumax3 micromagnetic simulation scripting"
+version: "0.1.1"
+date-released: "2026-05-15"
+type: software
+license: Apache-2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - name: "msjs2333"
+repository-code: "https://github.com/msjs2333/MumaxWriter.skill"
+url: "https://github.com/msjs2333/MumaxWriter.skill"
+abstract: "MumaxWriter.skill is a Codex/agent skill for writing, reviewing, parameterizing, and maintaining mumax3 .mx3 micromagnetic simulation scripts. It provides structured instructions, reusable templates, API pattern notes, anti-pattern checks, helper scripts, and evaluation examples for agent-assisted mumax3 workflows."
+keywords:
+  - mumax3
+  - micromagnetics
+  - micromagnetic simulation
+  - spintronics
+  - magnonics
+  - agent skills
+  - SKILL.md
+  - Codex
+  - LLM agents
+  - scientific computing

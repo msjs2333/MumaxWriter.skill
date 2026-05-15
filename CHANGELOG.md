@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.1.1 - 2026-05-15
+
+Citation and release metadata update for the generic `mumax3` Codex skill.
+
+### Added
+
+- Added repository-level `CITATION.cff` metadata for GitHub citation support and Zenodo-ready software archiving.
+- Added README citation guidance in English, Chinese, and Japanese.
+- Added release notes for the citation-only `v0.1.1` metadata release.
+
+### Changed
+
+- Documented that DOI badge and DOI links should be added after Zenodo generates the software DOI.
+
 ## 0.1.0 - 2026-05-12
 
 Initial public release of the generic `mumax3` Codex skill.

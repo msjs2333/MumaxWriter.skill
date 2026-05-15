@@ -95,6 +95,12 @@ python tests\validate_release.py
 
 Examples and static checks are for skill validation and script hygiene. They do not prove physical correctness, numerical convergence, or publication readiness.
 
+## Citation
+
+If you use this skill in research, teaching, or published workflows, please cite the repository using the metadata in [`CITATION.cff`](CITATION.cff). GitHub should show this metadata through the repository's "Cite this repository" button.
+
+This project is prepared for Zenodo software archiving. After Zenodo assigns a DOI for the `v0.1.1` release, add the DOI badge and DOI link to this section.
+
 ## Future Roadmap
 
 Planned directions for later releases:
@@ -106,7 +112,8 @@ Planned directions for later releases:
 
 ## References
 
-- [Release notes](docs/release_notes_v0.1.0.md)
+- [Release notes v0.1.1](docs/release_notes_v0.1.1.md)
+- [Release notes v0.1.0](docs/release_notes_v0.1.0.md)
 - [Example catalog](examples/catalog/README.md)
 - [Third-party sources](docs/third_party_sources.md)
 - [Troubleshooting](docs/troubleshooting.md)

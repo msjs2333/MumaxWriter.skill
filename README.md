@@ -75,6 +75,20 @@ Then invoke it explicitly with:
 Use $mumax3 to write or review this mumax3 script.
 ```
 
+## Install From Codex Marketplace
+
+Install the standalone skill from GitHub with:
+
+```powershell
+npx codex-marketplace add msjs2333/MumaxWriter.skill/skills/mumax3 --skill
+```
+
+Then invoke it explicitly with:
+
+```text
+Use $mumax3 to write or review this mumax3 script.
+```
+
 ## Quick Example
 
 ```text
@@ -99,6 +113,12 @@ This is the `v0.1.0` public snapshot. It includes generic mumax3 templates, expa
 
 The examples and static checks are intended for skill validation and script hygiene. They do not prove physical correctness, numerical convergence, or publication readiness.
 
+## Citation
+
+If you use this skill in research, teaching, or published workflows, please cite the repository using the metadata in [`CITATION.cff`](CITATION.cff). GitHub should show this metadata through the repository's "Cite this repository" button.
+
+This project is prepared for Zenodo software archiving. After Zenodo assigns a DOI for the `v0.1.1` release, add the DOI badge and DOI link to this section.
+
 ## Future Roadmap
 
 Planned directions for later releases:
@@ -110,7 +130,8 @@ Planned directions for later releases:
 
 ## Documentation
 
-- [Release notes](docs/release_notes_v0.1.0.md): scope, compatibility, validation status, and known limitations.
+- [Release notes v0.1.1](docs/release_notes_v0.1.1.md): citation metadata update and Zenodo archiving notes.
+- [Release notes v0.1.0](docs/release_notes_v0.1.0.md): initial public snapshot scope, compatibility, validation status, and known limitations.
 - [Example catalog](examples/catalog/README.md): prompts, expected outputs, and coverage map.
 - [Third-party sources](docs/third_party_sources.md): external source and provenance notes.
 - [Troubleshooting](docs/troubleshooting.md): common local validation and mumax3 issues.

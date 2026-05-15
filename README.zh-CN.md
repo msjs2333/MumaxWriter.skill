@@ -73,6 +73,20 @@ Copy-Item -Recurse .\skills\mumax3 C:\Users\<you>\.codex\skills\mumax3
 Use $mumax3 to write or review this mumax3 script.
 ```
 
+## 从 Codex Marketplace 安装
+
+通过 GitHub 安装 standalone skill：
+
+```powershell
+npx codex-marketplace add msjs2333/MumaxWriter.skill/skills/mumax3 --skill
+```
+
+然后显式调用：
+
+```text
+Use $mumax3 to write or review this mumax3 script.
+```
+
 ## 快速示例
 
 ```text
@@ -97,6 +111,12 @@ python tests\validate_release.py
 
 示例和静态检查只用于 skill 验证和脚本卫生检查，不证明物理正确性、数值收敛或论文级可用性。
 
+## 引用
+
+如果你在科研、教学或公开工作流中使用这个 skill，请使用 [`CITATION.cff`](CITATION.cff) 中的元数据引用本仓库。GitHub 应会通过仓库页面的 “Cite this repository” 按钮显示这些引用信息。
+
+本项目已为 Zenodo 软件归档做好准备。Zenodo 为 `v0.1.1` release 分配 DOI 后，再把 DOI badge 和 DOI 链接补充到本节。
+
 ## 未来规划
 
 后续版本计划方向：
@@ -108,7 +128,8 @@ python tests\validate_release.py
 
 ## 参考文档
 
-- [发布说明](docs/release_notes_v0.1.0.md)
+- [v0.1.1 发布说明](docs/release_notes_v0.1.1.md)
+- [v0.1.0 发布说明](docs/release_notes_v0.1.0.md)
 - [示例 catalog](examples/catalog/README.md)
 - [第三方来源说明](docs/third_party_sources.md)
 - [故障排查](docs/troubleshooting.md)
