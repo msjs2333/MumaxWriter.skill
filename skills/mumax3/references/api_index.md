@@ -7,9 +7,15 @@ Source baseline: official mumax3.12 API, <https://mumax.github.io/api.html>.
 ## Syntax And Constants
 
 - `true`, `false`
-- `pi`, `t`
+- `pi`, `inf`
+- `mu0`/`Mu0`, `GammaLL`, `t`, `step`
 - Math functions: `abs`, `ceil`, `floor`, `exp`, `log`, `log10`, `max`, `min`, `mod`, `pow`, `remainder`, `sin`, `cos`, `tan`, `sqrt`, `sinc`, `rand`, `randNorm`, `randSeed`
 - Formatting/printing: `Print`, `Printf`, `Sprintf`
+
+These names are built into mumax3. Use them directly; do not redeclare them with
+`:=`. Identifier lookup is case-insensitive in mumax3 scripts, so `mu0`, `Mu0`,
+and `MU0` refer to the same built-in constant. For less common names, search
+`api_full.md` before choosing a local variable name.
 
 ## Mesh And Geometry
 
@@ -98,6 +104,11 @@ Common spatial or table quantities:
 - `TableAutoSave(period)`, `TableSave()`, `TablePrint(...)`
 - `Snapshot(quantity)`, `SnapshotAs(quantity, path)`
 - `OutputFormat`, `TableAdd`, `TableAutoSave`
+
+Add table columns once during setup. `TableAdd` and `TableAddVar` define table
+columns; `TableSave` writes a row. Avoid calling `TableAddVar` inside a field
+loop to record changing values. Prefer table columns for existing quantities
+such as `B_ext` and `m`, or postprocess derived quantities in Python.
 
 ## Running And Solver Control
 

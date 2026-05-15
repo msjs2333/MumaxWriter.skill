@@ -45,6 +45,31 @@ GO_PACKAGE_SELECTORS = [
 ]
 
 ASSIGN_RE = re.compile(r"(?<![<>=!:+*/%^-])(:=|=)(?!=)")
+SHORT_DECL_RE = re.compile(r"^\s*([A-Za-z_][A-Za-z0-9_]*)\s*:=")
+FOR_RE = re.compile(r"^\s*for\b")
+
+FALLBACK_BUILTIN_IDENTIFIERS = {
+    "aex",
+    "alpha",
+    "b_ext",
+    "e_total",
+    "false",
+    "fixdt",
+    "gamma",
+    "gammall",
+    "inf",
+    "m",
+    "maxangle",
+    "msat",
+    "mu0",
+    "outputformat",
+    "pi",
+    "tableadd",
+    "tableaddvar",
+    "tablesave",
+    "t",
+    "true",
+}
 
 
 def strip_strings_and_comments(line: str, in_block_comment: bool) -> tuple[str, bool]:
@@ -94,10 +119,30 @@ def warn(warnings: list[str], path: Path, line_no: int | None, message: str) -> 
     warnings.append(f"{loc}: warning: {message}")
 
 
+def load_builtin_identifiers() -> set[str]:
+    """Load mumax3 identifiers from api_full.md, falling back to common names."""
+    identifiers = set(FALLBACK_BUILTIN_IDENTIFIERS)
+    api_full = Path(__file__).resolve().parents[1] / "references" / "api_full.md"
+    try:
+        text = api_full.read_text(encoding="utf-8")
+    except OSError:
+        return identifiers
+
+    for raw in text.splitlines():
+        match = re.match(r"^- `([A-Za-z_][A-Za-z0-9_]*)", raw.strip())
+        if match:
+            identifiers.add(match.group(1).lower())
+    return identifiers
+
+
+BUILTIN_IDENTIFIERS = load_builtin_identifiers()
+
+
 def check_text(path: Path, text: str) -> list[str]:
     warnings: list[str] = []
     clean_lines: list[str] = []
     in_block = False
+    block_stack: list[bool] = []
 
     for line_no, raw in enumerate(text.splitlines(), start=1):
         clean, in_block = strip_strings_and_comments(raw, in_block)
@@ -105,6 +150,11 @@ def check_text(path: Path, text: str) -> list[str]:
         stripped = clean.strip().lstrip("\ufeff")
         if not stripped:
             continue
+
+        leading_closes = len(stripped) - len(stripped.lstrip("}"))
+        for _ in range(min(leading_closes, len(block_stack))):
+            block_stack.pop()
+        in_for_block = any(block_stack)
 
         first = re.match(r"^([A-Za-z_][A-Za-z0-9_]*)\b", stripped)
         if first and first.group(1) in FORBIDDEN_STATEMENTS:
@@ -118,11 +168,27 @@ def check_text(path: Path, text: str) -> list[str]:
         if "^" in clean:
             warn(warnings, path, line_no, "`^` is not power in mumax3 scripts; use `pow(x, y)`")
 
+        short_decl = SHORT_DECL_RE.match(clean)
+        if short_decl and short_decl.group(1).lower() in BUILTIN_IDENTIFIERS:
+            name = short_decl.group(1)
+            warn(warnings, path, line_no, f"`{name}` is a mumax3 built-in identifier; do not redeclare it with `:=`")
+
         match = ASSIGN_RE.search(clean)
         if match:
             lhs = clean[: match.start()]
             if "," in lhs:
                 warn(warnings, path, line_no, "multiple assignment is suspicious in mumax3 scripts")
+
+        if "tableaddvar" in clean.lower() and in_for_block:
+            warn(warnings, path, line_no, "`TableAddVar` adds table columns; avoid calling it inside loops, use `TableSave` for rows")
+
+        is_for_open = bool(FOR_RE.match(stripped))
+        for ch in stripped[leading_closes:]:
+            if ch == "{":
+                block_stack.append(is_for_open)
+                is_for_open = False
+            elif ch == "}" and block_stack:
+                block_stack.pop()
 
     clean_text = "\n".join(clean_lines)
     has_mesh = ("SetGridSize" in clean_text and "SetCellSize" in clean_text) or "SetMesh" in clean_text

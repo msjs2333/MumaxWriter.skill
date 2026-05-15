@@ -227,6 +227,37 @@ SaveAs(m, "m_final.ovf")
 SaveAs(B_eff, "B_eff_final.ovf")
 ```
 
+`TableAdd` and `TableAddVar` are column-registration calls. Put them before the
+run or sweep loop, then use `TableSave()` inside the loop to append rows. If a
+derived value changes at each sweep point and is awkward to express as a
+mumax3 scalar function, save the underlying quantities and compute the derived
+column in Python.
+
+Recommended field-loop pattern:
+
+```go
+TableAdd(B_ext)
+TableAdd(E_total)
+
+for i:=0; i<=20; i++{
+    B_ext = Vector(-50e-3 + i*5e-3, 0, 0)
+    Minimize()
+    TableSave()
+}
+```
+
+Risky pattern:
+
+```go
+for i:=0; i<=20; i++{
+    h := -50e-3 + i*5e-3
+    B_ext = Vector(h, 0, 0)
+    Minimize()
+    TableAddVar(h, "H", "T")
+    TableSave()
+}
+```
+
 For region-specific output, call `.Region(region)` on quantities that support
 it, or `.Comp(component)` for vector components.
 

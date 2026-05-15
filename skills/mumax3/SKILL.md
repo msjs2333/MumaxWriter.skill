@@ -56,6 +56,8 @@ Read `references/language_subset.md` when validating syntax. Read `references/an
 
 Do not invent mumax3 APIs. If a needed identifier is absent from `api_index.md`, confirm it in `api_full.md` or the official API before using it.
 
+Before declaring a short variable with `:=`, check whether the name is a mumax3 built-in identifier. Constants and quantities such as `mu0`/`Mu0`, `pi`, `t`, `m`, `Msat`, `B_ext`, and `OutputFormat` are provided by mumax3 and should not be redeclared.
+
 ## Static Review Helper
 
 When reviewing generated or user-provided scripts, run `scripts/check_mx3_static.py path/to/file.mx3` if local tools are available. Treat its output as conservative warnings only; it does not prove mumax3 semantics.

@@ -43,6 +43,7 @@ Check `api_index.md` first. If absent there, check `api_full.md` or the official
 
 - Use `pow(x, y)` for powers. In Go-like syntax `^` is not exponentiation.
 - Prefer single assignment: `x := 1`, not `x, y := 1, 2`.
+- Do not redeclare mumax3 built-ins with `:=`. Names such as `mu0`/`Mu0`, `pi`, `t`, `m`, `Msat`, `B_ext`, `OutputFormat`, and solver/output quantities are already defined by mumax3.
 - Avoid `%` unless confirmed for the exact mumax3 version; prefer `mod(x, y)` or `remainder(x, y)` when a floating remainder is intended.
 - Do not store time-dependent expressions in ordinary variables unless one-time evaluation is intended.
 
@@ -65,4 +66,29 @@ B_ext.Add(mask, value)
 - Save `regions` when debugging spatial assignments.
 - Do not assume output files land in the working directory; mumax3 creates an output directory for a script run.
 - Include at least one final `Save`/`SaveAs` or an autosave/table schedule for scripts meant to produce data.
+- Treat `TableAdd` and `TableAddVar` as setup calls that add table columns. Do not use `TableAddVar` inside a hysteresis or parameter loop to record per-step scalar values; use `TableSave` inside the loop and compute derived columns from saved quantities during postprocessing.
+
+Risky:
+
+```go
+for i:=0; i<=10; i++{
+    h := -0.1 + 0.02*i
+    B_ext = Vector(h, 0, 0)
+    Minimize()
+    TableAddVar(h, "H", "T")
+    TableSave()
+}
+```
+
+Safer:
+
+```go
+TableAdd(B_ext)
+for i:=0; i<=10; i++{
+    h := -0.1 + 0.02*i
+    B_ext = Vector(h, 0, 0)
+    Minimize()
+    TableSave()
+}
+```
 
