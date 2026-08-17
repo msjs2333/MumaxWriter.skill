@@ -1,0 +1,3 @@
+# The deployed skill manifest is byte-addressed; preserve exact source bytes.
+# Existing files include CRLF and mixed-EOL content, so CR at EOL is intentional.
+skills/mumax3/** -text whitespace=cr-at-eol
