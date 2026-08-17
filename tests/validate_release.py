@@ -22,6 +22,7 @@ HELPER_SCRIPTS = [
     SKILL / "scripts" / "check_mx3_static.py",
     SKILL / "scripts" / "render_template.py",
     SKILL / "scripts" / "collect_case_status.py",
+    SKILL / "scripts" / "sync_local_skill.py",
 ]
 
 TEMPLATE_PARAM_MAP = {
@@ -40,7 +41,15 @@ SENSITIVE_TERMS = [
 ]
 
 SCAN_SUFFIXES = {".md", ".py", ".mx3", ".template", ".json", ".yaml", ".yml", ".txt"}
-EXCLUDED_DIR_NAMES = {".git", "__pycache__", ".pytest_cache", "runs", "results", "external_reference_cache"}
+EXCLUDED_DIR_NAMES = {
+    ".git",
+    "__pycache__",
+    ".pytest_cache",
+    "runs",
+    "results",
+    "work",
+    "external_reference_cache",
+}
 EXCLUDED_FILES = {
     Path("tests") / "validate_release.py",
     Path("docs") / "research" / "mumax3_script_language_and_api.md",
@@ -129,6 +138,17 @@ def check_static_warnings(failures: list[str]) -> None:
         print(proc.stderr)
 
 
+def check_helper_tests(failures: list[str]) -> None:
+    proc = run([sys.executable, "-m", "unittest", "discover", "-s", "tests", "-p", "test_*.py"])
+    if proc.returncode == 0:
+        print("PASS: helper regression tests")
+    else:
+        failures.append("helper regression tests failed")
+        print("FAIL: helper regression tests")
+        print(proc.stdout)
+        print(proc.stderr)
+
+
 def check_mumax_vet(failures: list[str]) -> None:
     mumax = shutil.which("mumax3")
     if not mumax:
@@ -153,7 +173,8 @@ def iter_scannable_files() -> list[Path]:
         relative = path.relative_to(ROOT)
         if relative in EXCLUDED_FILES:
             continue
-        if any(part in EXCLUDED_DIR_NAMES for part in relative.parts):
+        directory_parts = relative.parts[:-1]
+        if any(part in EXCLUDED_DIR_NAMES or part.startswith(".tmp") or part.endswith("_stage") or part.endswith("_staging") for part in directory_parts):
             continue
         if path.suffix in SCAN_SUFFIXES or path.name in {"CHANGELOG.md", "LICENSE"}:
             files.append(path)
@@ -185,6 +206,7 @@ def main() -> int:
     check_helper_compilation(failures)
     check_templates(failures)
     check_static_warnings(failures)
+    check_helper_tests(failures)
     check_mumax_vet(failures)
     check_sensitive_terms(failures)
 

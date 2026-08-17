@@ -36,6 +36,8 @@ MumaxWriter.skill/
         api_full.md
         examples.md
         structures.md
+        project_discovery.md
+        project_workflows.md
         parameter_sweep.md
         output_and_reproducibility.md
         compatibility_notes.md
@@ -43,6 +45,7 @@ MumaxWriter.skill/
         check_mx3_static.py
         render_template.py
         collect_case_status.py
+        sync_local_skill.py
   docs/
     release_notes_v0.1.0.md
     third_party_sources.md
@@ -74,6 +77,15 @@ Then invoke it explicitly with:
 ```text
 Use $mumax3 to write or review this mumax3 script.
 ```
+
+For an existing installation, preview and apply an exact, backed-up synchronization:
+
+```powershell
+python skills\mumax3\scripts\sync_local_skill.py --dry-run
+python skills\mumax3\scripts\sync_local_skill.py --apply
+```
+
+The apply operation backs up the current `.../skills/mumax3` tree before replacing it and verifies source/target hashes.
 
 ## Install From Codex Marketplace
 
@@ -109,9 +121,14 @@ The validator uses only the Python standard library. It compiles helper scripts,
 
 ## Current Status
 
-This is the `v0.1.0` public snapshot. It includes generic mumax3 templates, expanded API pattern references, deterministic helper scripts, and a repository-level evaluation surface under `examples/`.
+The latest tagged metadata release is `v0.1.1`. The working tree after that release adds project-context discovery,
+signature-aware workflow guidance, safer local synchronization, and expanded helper regression coverage while keeping the
+published skill project-agnostic.
 
 The examples and static checks are intended for skill validation and script hygiene. They do not prove physical correctness, numerical convergence, or publication readiness.
+
+When a repository provides `docs/mumax3_reference/current_project_context.md`, the skill treats that project-local file and
+the active source scripts it links as authoritative over generic examples.
 
 ## Citation
 

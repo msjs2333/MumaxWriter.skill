@@ -50,8 +50,9 @@ FOR_RE = re.compile(r"^\s*for\b")
 SET_SOLVER_EULER_RE = re.compile(r"\bsetsolver\s*\(\s*1\s*\)", re.IGNORECASE)
 FIXDT_ASSIGN_RE = re.compile(r"\bfixdt\s*=", re.IGNORECASE)
 EXT_API_RE = re.compile(r"\bext_[A-Za-z0-9_]*", re.IGNORECASE)
+TEMPLATE_PLACEHOLDER_RE = re.compile(r"\{\{\s*[A-Za-z_][A-Za-z0-9_]*\s*\}\}")
 
-FALLBACK_BUILTIN_IDENTIFIERS = {
+PROTECTED_BUILTIN_IDENTIFIERS = {
     "aex",
     "alpha",
     "b_ext",
@@ -122,31 +123,16 @@ def warn(warnings: list[str], path: Path, line_no: int | None, message: str) -> 
     warnings.append(f"{loc}: warning: {message}")
 
 
-def load_builtin_identifiers() -> set[str]:
-    """Load mumax3 identifiers from api_full.md, falling back to common names."""
-    identifiers = set(FALLBACK_BUILTIN_IDENTIFIERS)
-    api_full = Path(__file__).resolve().parents[1] / "references" / "api_full.md"
-    try:
-        text = api_full.read_text(encoding="utf-8")
-    except OSError:
-        return identifiers
-
-    for raw in text.splitlines():
-        match = re.match(r"^- `([A-Za-z_][A-Za-z0-9_]*)", raw.strip())
-        if match:
-            identifiers.add(match.group(1).lower())
-    return identifiers
-
-
-BUILTIN_IDENTIFIERS = load_builtin_identifiers()
-
-
 def check_text(path: Path, text: str) -> list[str]:
     warnings: list[str] = []
     clean_lines: list[str] = []
     in_block = False
     block_stack: list[bool] = []
     euler_solver_lines: list[int] = []
+
+    template_mode = path.name.endswith(".mx3.template") or "{{" in text
+    if template_mode:
+        text = TEMPLATE_PLACEHOLDER_RE.sub("0", text)
 
     for line_no, raw in enumerate(text.splitlines(), start=1):
         clean, in_block = strip_strings_and_comments(raw, in_block)
@@ -165,15 +151,16 @@ def check_text(path: Path, text: str) -> list[str]:
             keyword = first.group(1)
             warn(warnings, path, line_no, f"`{keyword}`: {FORBIDDEN_STATEMENTS[keyword]}")
 
+        clean_lower = clean.lower()
         for selector in GO_PACKAGE_SELECTORS:
-            if selector in clean:
+            if selector in clean_lower:
                 warn(warnings, path, line_no, f"`{selector}` looks like Go standard library usage; use mumax3 built-ins or Python orchestration")
 
         if "^" in clean:
             warn(warnings, path, line_no, "`^` is not power in mumax3 scripts; use `pow(x, y)`")
 
         short_decl = SHORT_DECL_RE.match(clean)
-        if short_decl and short_decl.group(1).lower() in BUILTIN_IDENTIFIERS:
+        if short_decl and short_decl.group(1).lower() in PROTECTED_BUILTIN_IDENTIFIERS:
             name = short_decl.group(1)
             warn(warnings, path, line_no, f"`{name}` is a mumax3 built-in identifier; do not redeclare it with `:=`")
 
@@ -202,8 +189,9 @@ def check_text(path: Path, text: str) -> list[str]:
                 block_stack.pop()
 
     clean_text = "\n".join(clean_lines)
-    has_mesh = ("SetGridSize" in clean_text and "SetCellSize" in clean_text) or "SetMesh" in clean_text
-    has_output = any(token in clean_text for token in ("Save(", "SaveAs(", "AutoSave(", "TableAutoSave(", "TableSave(", "Snapshot("))
+    clean_text_lower = clean_text.lower()
+    has_mesh = ("setgridsize" in clean_text_lower and "setcellsize" in clean_text_lower) or "setmesh" in clean_text_lower
+    has_output = any(token in clean_text_lower for token in ("save(", "saveas(", "autosave(", "tableautosave(", "tablesave(", "snapshot("))
     has_fixdt = bool(FIXDT_ASSIGN_RE.search(clean_text))
 
     if not has_mesh:

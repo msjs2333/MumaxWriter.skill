@@ -109,6 +109,12 @@ anisU.SetRegion(1, Vector(1, 0, 0))
 B_ext.SetRegion(2, Vector(0, 5e-3, 0))
 ```
 
+Each cell has one region label. For local anisotropy lines or bands, save the
+region map before running and inspect whether later definitions overwrite an
+absorber or another material zone. If two independently varying properties
+must overlap, use deliberate combined regions or a mask/custom-quantity
+approach supported by the target mumax3 version.
+
 For magnetization, use `m.Set(...)` globally, `m.SetRegion(...)` by material
 region, or `m.SetInShape(...)` for geometric seeds independent of region labels.
 
@@ -380,6 +386,11 @@ FreeLayerThickness = 1.2e-9
 Lambda = 1
 EpsilonPrime = 0.02
 ```
+
+When `J` varies in space, preserve the mask as a reproducible input artifact
+and state whether its values represent experimental charge-current density or
+an effective spin-current input. Save or hash the mask, and verify its grid and
+cell size against the loaded magnetization checkpoint.
 
 Cross-check in `api_full.md#spin-currents` and the official API before using
 spin-torque parameters.

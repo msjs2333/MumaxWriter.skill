@@ -18,9 +18,17 @@ from typing import Any
 FIELDNAMES = [
     "case_id",
     "case_dir",
+    "result_dir",
     "reported_status",
     "derived_status",
     "params_json",
+    "manifest_json",
+    "config_signature",
+    "input_sha256",
+    "dynamic_signature",
+    "analysis_status",
+    "manual_review_status",
+    "provenance_state",
     "mx3_count",
     "out_dir_count",
     "ovf_count",
@@ -44,6 +52,34 @@ def load_params(path: Path) -> tuple[dict[str, Any], str]:
     if not isinstance(data, dict):
         return {}, "params.json is not a JSON object"
     return data, ""
+
+
+def load_optional_json(path: Path) -> dict[str, Any]:
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (FileNotFoundError, OSError, json.JSONDecodeError):
+        return {}
+    return data if isinstance(data, dict) else {}
+
+
+def first_value(data: dict[str, Any], keys: tuple[str, ...]) -> str:
+    for key in keys:
+        value = data.get(key)
+        if value not in (None, ""):
+            return str(value)
+    return ""
+
+
+def find_manifest(case_dir: Path, root: Path) -> Path | None:
+    for path in (
+        case_dir / "manifest.json",
+        case_dir / "case_manifest.json",
+        root / "manifest.json",
+        root / "case_manifest.json",
+    ):
+        if path.exists():
+            return path
+    return None
 
 
 def find_case_dirs(root: Path, recursive: bool) -> list[Path]:
@@ -73,6 +109,12 @@ def count_nonempty(paths: list[Path]) -> int:
 def derive_status(row: dict[str, Any]) -> str:
     if row["error_message"] or row["stderr_nonempty"]:
         return "needs_review"
+    if row["provenance_state"] == "stale":
+        return "stale"
+    if row["manual_review_status"] not in {"", "review_pending"}:
+        return "review_recorded"
+    if row["analysis_status"] == "analysis_fresh":
+        return "analysis_present"
     if row["ovf_count"] or row["table_count"]:
         return "outputs_present"
     if row["out_dir_count"]:
@@ -89,9 +131,58 @@ def display_path(path: Path, root: Path) -> str:
         return str(path)
 
 
-def summarize_case(case_dir: Path, root: Path) -> dict[str, Any]:
+def summarize_case(case_dir: Path, root: Path, result_root: Path | None = None) -> dict[str, Any]:
     params_path = case_dir / "params.json"
     params, error_message = load_params(params_path)
+    try:
+        relative_case = case_dir.resolve().relative_to(root.resolve())
+    except ValueError:
+        relative_case = Path(case_dir.name)
+    result_dir = result_root / relative_case if result_root else case_dir
+    manifest_path = find_manifest(case_dir, root)
+    manifest = load_optional_json(manifest_path) if manifest_path else {}
+    run_record = load_optional_json(case_dir / "run_record.json")
+    analysis_record = load_optional_json(result_dir / "analysis_record.json")
+    manual_review = load_optional_json(result_dir / "manual_review.json")
+
+    config_signature = first_value(
+        params,
+        ("configuration_signature", "config_signature", "case_signature", "stage2_signature", "stage3_signature"),
+    )
+    input_sha256 = first_value(
+        params,
+        ("checkpoint_sha256", "static_input_sha256", "input_sha256", "h0_sha256"),
+    )
+    dynamic_signature = first_value(params, ("dynamic_signature", "stage3_signature"))
+    analysis_signature = first_value(analysis_record, ("analysis_signature", "signature"))
+    analysis_dynamic = first_value(analysis_record, ("dynamic_signature", "stage3_signature"))
+    review_dynamic = first_value(manual_review, ("dynamic_signature", "stage3_signature"))
+    review_analysis = first_value(manual_review, ("analysis_signature",))
+
+    stale = False
+    if dynamic_signature and analysis_dynamic and dynamic_signature != analysis_dynamic:
+        stale = True
+    if dynamic_signature and review_dynamic and dynamic_signature != review_dynamic:
+        stale = True
+    if analysis_signature and review_analysis and analysis_signature != review_analysis:
+        stale = True
+
+    if stale:
+        provenance_state = "stale"
+    elif config_signature or input_sha256 or dynamic_signature or manifest:
+        provenance_state = "recorded"
+    elif list(case_dir.glob("*.out/*.ovf")) or list(case_dir.glob("*.out/table.txt")):
+        provenance_state = "unverified_outputs"
+    else:
+        provenance_state = "unrecorded"
+
+    if analysis_record:
+        analysis_status = "analysis_fresh" if not stale else "analysis_stale"
+    else:
+        analysis_status = ""
+    manual_review_status = first_value(manual_review, ("status", "classification")) or (
+        "review_pending" if analysis_record else ""
+    )
     out_dirs = [path for path in case_dir.glob("*.out") if path.is_dir()]
     stdout_logs = list(case_dir.glob("logs/*stdout*.txt"))
     stderr_logs = list(case_dir.glob("logs/*stderr*.txt"))
@@ -99,9 +190,17 @@ def summarize_case(case_dir: Path, root: Path) -> dict[str, Any]:
     row: dict[str, Any] = {
         "case_id": str(params.get("case_id") or case_dir.name),
         "case_dir": display_path(case_dir, root),
-        "reported_status": str(params.get("status", "")),
+        "result_dir": str(result_dir),
+        "reported_status": first_value(run_record, ("status",)) or str(params.get("status", "")),
         "derived_status": "",
         "params_json": "yes" if params_path.exists() else "no",
+        "manifest_json": str(manifest_path) if manifest_path else "",
+        "config_signature": config_signature,
+        "input_sha256": input_sha256,
+        "dynamic_signature": dynamic_signature,
+        "analysis_status": analysis_status,
+        "manual_review_status": manual_review_status,
+        "provenance_state": provenance_state,
         "mx3_count": len(list(case_dir.glob("*.mx3"))),
         "out_dir_count": len(out_dirs),
         "ovf_count": len(list(case_dir.glob("*.out/*.ovf"))),
@@ -132,6 +231,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Collect conservative mumax3 case status rows.")
     parser.add_argument("root", type=Path, help="case directory or directory containing case directories")
     parser.add_argument("--recursive", action="store_true", help="scan nested directories for cases")
+    parser.add_argument("--result-root", type=Path, help="parallel result root containing analysis and manual-review records")
     parser.add_argument("--csv", type=Path, help="write a CSV summary")
     parser.add_argument("--json", type=Path, help="write a JSON summary")
     return parser
@@ -148,7 +248,7 @@ def main(argv: list[str]) -> int:
         return 2
 
     case_dirs = find_case_dirs(root, args.recursive)
-    rows = [summarize_case(case_dir, root) for case_dir in case_dirs]
+    rows = [summarize_case(case_dir, root, args.result_root) for case_dir in case_dirs]
 
     if args.csv:
         write_csv(args.csv, rows)

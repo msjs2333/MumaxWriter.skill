@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Added repository-local project-context discovery without embedding private or fast-changing model defaults in the generic skill.
+- Added task workflow guidance for signatures, checkpoint hashes, resume behavior, ETA, path overrides, manual review, and layered tests.
+- Added a backed-up, hash-verified local skill synchronization helper and helper regression tests.
+
+### Changed
+
+- Expanded region, local anisotropy, spin-current mask, and staged-drive guidance.
+- Made static mesh/output checks case-insensitive and limited protected-name warnings to core mumax3 quantities and constants.
+- Extended case-status collection with manifest, provenance, analysis-freshness, and manual-review fields.
+
 ## 0.1.1 - 2026-05-15
 
 Citation and release metadata update for the generic `mumax3` Codex skill.

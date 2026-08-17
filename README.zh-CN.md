@@ -36,6 +36,8 @@ MumaxWriter.skill/
         api_full.md
         examples.md
         structures.md
+        project_discovery.md
+        project_workflows.md
         parameter_sweep.md
         output_and_reproducibility.md
         compatibility_notes.md
@@ -43,6 +45,7 @@ MumaxWriter.skill/
         check_mx3_static.py
         render_template.py
         collect_case_status.py
+        sync_local_skill.py
   docs/
     release_notes_v0.1.0.md
     third_party_sources.md
@@ -72,6 +75,15 @@ Copy-Item -Recurse .\skills\mumax3 C:\Users\<you>\.codex\skills\mumax3
 ```text
 Use $mumax3 to write or review this mumax3 script.
 ```
+
+已有安装可先预览，再执行带备份的精确同步：
+
+```powershell
+python skills\mumax3\scripts\sync_local_skill.py --dry-run
+python skills\mumax3\scripts\sync_local_skill.py --apply
+```
+
+应用同步前会备份当前 `.../skills/mumax3`，替换后再校验源码与安装目录的文件哈希。
 
 ## 从 Codex Marketplace 安装
 
@@ -107,9 +119,11 @@ python tests\validate_release.py
 
 ## 当前状态
 
-这是 `v0.1.0` 公开快照。安装版 skill 现在已经在 `skills/mumax3/assets/templates/` 下包含通用 mumax3 模板，`skills/mumax3/references/api_patterns.md` 也已经扩展了常见 mumax3 API 组合、solver/output 选择、时间依赖场和高级功能的 pattern 覆盖；`skills/mumax3/scripts/` 现在包含确定性辅助脚本；仓库级 `examples/` 提供评估 prompt、预期输出、覆盖 catalog 和人工评估 checklist。
+最近的标签与元数据版本为 `v0.1.1`。此后的工作树增加了项目上下文发现、签名感知的任务工作流、安全本地同步和辅助工具回归测试，同时继续保持公开 skill 与具体研究项目解耦。
 
 示例和静态检查只用于 skill 验证和脚本卫生检查，不证明物理正确性、数值收敛或论文级可用性。
+
+如果项目提供 `docs/mumax3_reference/current_project_context.md`，skill 会把该项目内文件及其链接的活动源码视为高于通用示例的权威依据。
 
 ## 引用
 

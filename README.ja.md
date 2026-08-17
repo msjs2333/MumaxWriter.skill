@@ -36,6 +36,8 @@ MumaxWriter.skill/
         api_full.md
         examples.md
         structures.md
+        project_discovery.md
+        project_workflows.md
         parameter_sweep.md
         output_and_reproducibility.md
         compatibility_notes.md
@@ -43,6 +45,7 @@ MumaxWriter.skill/
         check_mx3_static.py
         render_template.py
         collect_case_status.py
+        sync_local_skill.py
   docs/
     release_notes_v0.1.0.md
     third_party_sources.md
@@ -91,7 +94,7 @@ python tests\validate_release.py
 
 ## Current Status
 
-これは `v0.1.0` public snapshot です。インストール対象 skill パスには、`skills/mumax3/assets/templates/` の下に汎用的な mumax3 テンプレートが追加され、`skills/mumax3/references/api_patterns.md` には一般的な mumax3 API pattern が拡充されています。`skills/mumax3/scripts/` には deterministic helper scripts があり、リポジトリレベルの `examples/` には evaluation prompt、expected output、coverage catalog、manual evaluation checklist が追加されています。
+最新のタグ付きメタデータ release は `v0.1.1` です。その後の作業ツリーでは、project context discovery、signature-aware workflow、安全なローカル同期、helper regression test が追加されています。公開 skill は特定の研究プロジェクトに依存しません。
 
 Examples and static checks are for skill validation and script hygiene. They do not prove physical correctness, numerical convergence, or publication readiness.
 

@@ -78,7 +78,9 @@ Common vector parameters:
 
 Spin-torque/current parameters:
 
-- `J`, `Pol`, `xi`, `Lambda`, `EpsilonPrime`, `FixedLayer`, `FreeLayerThickness`, `DisableZhangLiTorque`, `DisableSlonczewskiTorque`
+- `J`, `Pol`, `xi`, `Lambda`, `EpsilonPrime`
+- `FixedLayer`, `FixedLayerPosition`, `FIXEDLAYER_TOP`, `FIXEDLAYER_BOTTOM`, `FreeLayerThickness`
+- `DisableZhangLiTorque`, `DisableSlonczewskiTorque`
 
 ## Fields And Excitation
 
