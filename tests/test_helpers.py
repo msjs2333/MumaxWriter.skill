@@ -212,6 +212,10 @@ class ReferenceContractTests(unittest.TestCase):
             "## Output And Sampling Profiles",
             "## Analysis Products And Plot Profiles",
             "## Retention And Safe Release",
+            "`sealed_for_retention`",
+            "Treat backup availability as necessary but not sufficient",
+            "never propagate a source deletion into the backup",
+            "periodic content scrubs",
         )
         for fragment in workflow_fragments:
             with self.subTest(document="workflow", fragment=fragment):
