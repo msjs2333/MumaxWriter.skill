@@ -6,13 +6,15 @@
 
 当前通用 Skill 源码 `D:\Project\MumaxWriter.skill\skills\mumax3` 与安装版
 `C:\Users\msjs2\.codex\skills\mumax3` 在排除 `__pycache__`、`.pyc`、`.pyo` 后均为 21 个维护文件，
-相对路径、字节数和逐文件 SHA256 完全一致。该安装内容已固化为：
+相对路径、字节数和逐文件 SHA256 完全一致。该安装内容已按原始字节固化为：
 
-- 内容基线 commit：`883a144afdb2502d732865a27638d2de01eb8fbf`；
+- 功能内容 commit：`883a144afdb2502d732865a27638d2de01eb8fbf`；
+- 可检出字节基线 commit：`d2b0243a717648b4f817179dbc2892b724f0de29`；
 - annotated tag：`mumax3-installed-baseline-20260817`，解引用到上述 commit；
 - 21 文件清单 SHA256：`6b72247bcd7858ede96125548a6ec2ff9014ced500e8df86af8dd224be7df67d`。
 
-标签只指向安装内容提交；本文随后单独提交，以便记录真实基线 commit，避免在同一提交内写自引用哈希。
+标签指向可从新 worktree 逐字节重建安装版的 `d2b0243…`；本文单独提交，以便记录真实基线 commit，避免在
+同一提交内写自引用哈希。
 
 ## 2. 仓库起点
 
@@ -44,6 +46,12 @@
 | `tests/test_helpers.py` | 新增 | static/status/sync helper 临时目录回归 |
 | `tests/validate_release.py` | 修改 | 新 helper、临时目录排除和 unittest 纳入发布验证 |
 
+首次在新 worktree 检出后发现系统级 `core.autocrlf=true` 会改变 10 个部署文件，说明原工作树虽与安装版相同，
+普通文本 blob 仍不能重建混合换行字节。随后在 `d2b0243…` 增加 `.gitattributes`：
+`skills/mumax3/** -text whitespace=cr-at-eol`，并对 21 个 Skill 文件按工作树原始字节重新建立 index。该提交的
+逐文件检查同时满足 `index blob = D 盘工作文件 = 安装版文件`，mismatch 为 `0`；大 diffstat 仅来自既有换行
+字节的首次原样记录，不是 Skill 行为改写。
+
 以下既有未跟踪内容未读取大文件、未暂存、未删除：`.*_stage/`、`.*_staging/`、`.tmp_*`、`.claude/`、
 `work/`、论文 PDF、全文 TXT 和其他项目暂存件。它们不属于 Skill 安装基线，继续由原作者管理。
 
@@ -58,11 +66,11 @@
 | 独立源码/安装版清单 | 各 21 文件；mismatch `0`；清单 SHA256 相同 |
 | staged diff 范围 | 14 个 allowlist 文件，无 staging/work/论文材料 |
 
-严格 `git diff --cached --check` 对新增的 `project_discovery.md:41` 报告 `new blank line at EOF`。该尾部空行是
-审计前安装版的既有字节；源码文件 SHA256
-`bc507777a54dd3438611fdeab43f1940c1965dbb537c326f89d4464203b392e7` 与安装版完全相同。去除此空行会破坏
-“基线与安装版逐字节一致”，因此阶段 3.5 保留它并把例外显式记录；其余 staged 文件的严格 diff check 通过。
-阶段 4 若要清理该格式，必须作为可见源码 diff，经验证和用户确认后再同步安装版。
+首次暂存时，严格 `git diff --cached --check` 对新增的 `project_discovery.md:41` 报告
+`new blank line at EOF`。该尾部空行是审计前安装版的既有字节；文件 SHA256
+`bc507777a54dd3438611fdeab43f1940c1965dbb537c326f89d4464203b392e7` 与安装版相同。最终字节基线通过
+`.gitattributes` 显式保存既有 CR/EOL，`d2b0243…` 的严格 diff check 通过。阶段 4 若要统一格式，必须作为可见
+源码 diff，经验证和用户确认后再同步安装版。
 
 ## 5. 后续边界
 
