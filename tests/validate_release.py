@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import py_compile
+import re
 import shutil
 import subprocess
 import sys
@@ -55,6 +56,48 @@ EXCLUDED_FILES = {
     Path("docs") / "research" / "mumax3_script_language_and_api.md",
 }
 
+REFERENCE_CONTRACTS = {
+    SKILL / "SKILL.md": (
+        "## Safety Invariants",
+        "**Single writer:**",
+        "**SHA256 lineage:**",
+        "**All-vector decision gates:**",
+        "**Manual/automatic separation:**",
+    ),
+    SKILL / "references" / "project_discovery.md": (
+        "## Start From The Requested Intent",
+        "Status, ETA, monitor, cancel",
+        "Decision contract, fresh gate summaries, complete ancestor chain",
+    ),
+    SKILL / "references" / "project_workflows.md": (
+        "## State Safety Primitives",
+        "`execution_state`",
+        "## Decision Contracts And Ancestor Gates",
+        "`monitor_handoff.json`",
+        "`cancelled_by_user`",
+        "A GPU lease is capacity scheduling",
+    ),
+    SKILL / "references" / "output_and_reproducibility.md": (
+        "## Output Directory Contract",
+        "`execution_succeeded_reconciliation_required`",
+        "## Timeline And Completion Contract",
+        "repository-relative path",
+        "## Output And Sampling Profiles",
+        "## Analysis Products And Plot Profiles",
+        "## Retention And Safe Release",
+    ),
+}
+
+PROJECT_SPECIFIC_TERMS = (
+    "E:\\CDW",
+    "D:\\Project\\MumaxWriter.skill",
+    "C:\\Users\\msjs2",
+    "field_switchable_ellipse_ku_dw_lens",
+    "dmi2p4_f050",
+    "bimeron_homotopy_diagnostic",
+    "3335.681",
+)
+
 
 def rel(path: Path) -> str:
     return str(path.relative_to(ROOT))
@@ -82,6 +125,43 @@ def check_skill_metadata(failures: list[str]) -> None:
     frontmatter = text.split("---", 2)[1]
     check("name: mumax3" in frontmatter, "SKILL.md frontmatter has name: mumax3", failures)
     check("description:" in frontmatter and ".mx3" in frontmatter, "SKILL.md frontmatter has useful description", failures)
+
+
+def check_reference_contracts(failures: list[str]) -> None:
+    for path, fragments in REFERENCE_CONTRACTS.items():
+        check(path.is_file(), f"{rel(path)} exists", failures)
+        if not path.is_file():
+            continue
+        text = path.read_text(encoding="utf-8-sig").replace("\r\n", "\n")
+        for fragment in fragments:
+            check(fragment in text, f"{rel(path)} contains contract fragment {fragment!r}", failures)
+
+    skill_text = (SKILL / "SKILL.md").read_text(encoding="utf-8-sig")
+    links = sorted(set(re.findall(r"references/[A-Za-z0-9_./-]+\.md", skill_text)))
+    check(bool(links), "SKILL.md routes to local references", failures)
+    for link in links:
+        check((SKILL / link).is_file(), f"SKILL.md reference exists: {link}", failures)
+
+
+def check_project_independence(failures: list[str]) -> None:
+    hits: list[str] = []
+    for path in SKILL.rglob("*"):
+        if not path.is_file() or path.suffix.lower() not in SCAN_SUFFIXES:
+            continue
+        try:
+            text = path.read_text(encoding="utf-8-sig")
+        except UnicodeDecodeError:
+            continue
+        for term in PROJECT_SPECIFIC_TERMS:
+            if term in text:
+                hits.append(f"{rel(path)}: {term}")
+    if hits:
+        failures.append("generic skill contains project-specific terms")
+        print("FAIL: generic skill is project-independent")
+        for hit in hits:
+            print(f"  {hit}")
+    else:
+        print("PASS: generic skill is project-independent")
 
 
 def check_helper_compilation(failures: list[str]) -> None:
@@ -203,6 +283,8 @@ def check_sensitive_terms(failures: list[str]) -> None:
 def main() -> int:
     failures: list[str] = []
     check_skill_metadata(failures)
+    check_reference_contracts(failures)
+    check_project_independence(failures)
     check_helper_compilation(failures)
     check_templates(failures)
     check_static_warnings(failures)
