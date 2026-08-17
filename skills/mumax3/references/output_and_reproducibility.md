@@ -160,32 +160,6 @@ verify every SHA256 (and archive integrity where applicable), test the recovery 
 plan SHA and file list. Any failure preserves the source. Unknown references fail closed to pinned; probability is not a safe
 garbage-collection rule.
 
-Treat backup availability as necessary but not sufficient for release. Make a dataset eligible only after it is explicitly
-`sealed_for_retention`: simulation, analysis, profiles, reference closure, and manual-evidence inputs are stable and no related
-writer is active. Reopening the dataset, adding a reference, or changing a profile/classification expires prior coverage and
-retention plans.
-
-Identify a mounted cold volume by a persistent volume/backup-set identity, physical-device evidence, and an immutable snapshot
-manifest SHA256. A drive letter, mount path, matching filename, size, or modification time is not backup identity. Compare
-ordinary files by repository-relative path plus SHA256. For archives, distinguish byte-exact container recovery from expanded
-member equivalence; the latter requires a complete normalized member set and per-member SHA256 and cannot promise identical
-archive bytes.
-
-Keep copy-only synchronization and source release as separate plans, transactions, locks, and user confirmations. Publish
-backup snapshots immutably; never propagate a source deletion into the backup as part of prune. Backup-side garbage collection
-needs its own content-addressed plan and authorization. If the source release leaves one physical copy, report that it is now
-the sole archive rather than a redundant backup; require policy or exact-plan acceptance appropriate to the retention class.
-
-Re-discover the bound volume and re-hash every release candidate at apply time. A hash cache may use size, mtime, or stable file
-IDs only to shortlist routine scrub work, never as deletion proof. Run periodic content scrubs, mark damaged or incomplete
-snapshots degraded, and exclude them from recovery coverage. Preserve compact snapshot roots, transfer/recovery audits, release
-manifests, and authorization records independently from the large cold volume.
-
-Limit each destructive plan by declared dataset, file count, and bytes. Budget enough independent temporary space for the
-release batch, archive expansion, recovery copy, journal, and protocol margin; reduce the batch instead of replacing complete
-recovery validation with sampling. Reject case-folding, Unicode-normalization, reserved-name, path-traversal, duplicate-member,
-and link/reparse-point ambiguities rather than silently renaming objects.
-
 ## Helper Script Invocations
 
 Render a repository template after listing the required placeholders:

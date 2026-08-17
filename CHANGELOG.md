@@ -16,8 +16,6 @@
 - Added output-directory/timeline reconciliation, repository-relative identity, initial-state roles, output/plot profiles,
   product DAGs, protocol-derived capacity estimates, and verified retention/release guidance.
 - Added release checks for required safety contracts, local reference links, and exclusion of project-specific literals.
-- Added generic cold-volume guidance for sealed datasets, immutable backup snapshots, content scrubs, independent backup GC,
-  archive recovery semantics, copy-count risk, and separately authorized source release.
 
 ### Changed
 
