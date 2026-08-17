@@ -61,6 +61,9 @@ MumaxWriter.skill/
 - 为批量仿真参数化脚本。
 - 按 mesh、geometry、material、initial state、field、output、run stage 组织脚本。
 - 在参数扫描、拟合、绘图和结果整理场景中建议使用 Python 包装 mumax3。
+- 让纯 status/monitor 和产品级绘图按最小上下文执行，不默认加载无关 API、几何历史或大体积场数据。
+- 显式保留同一可变资源单 writer、SHA256 谱系、完整窗口全矢量门禁，以及独立的人工科学分类层。
+- 提供后台 handoff/取消、输出收口、profile、产品 manifest 和安全留存的通用合同，不嵌入具体项目阈值或路径。
 
 ## 本地安装
 
@@ -115,11 +118,16 @@ Use $mumax3 to write a minimal mumax3 thin-film relaxation script with SI units,
 python tests\validate_release.py
 ```
 
-该验证脚本只使用 Python 标准库。它会编译 helper 脚本、检查模板参数示例、对 expected-output `.mx3` 做保守静态检查，并在本地 `PATH` 中存在 mumax3 时运行 `mumax3 -vet`。
+该验证脚本只使用 Python 标准库。它会编译 helper 脚本、检查模板参数示例、验证安全/reference 合同与项目独立性、
+对 expected-output `.mx3` 做保守静态检查，并在本地 `PATH` 中存在 mumax3 时运行 `mumax3 -vet`。
 
 ## 当前状态
 
-最近的标签与元数据版本为 `v0.1.1`。此后的工作树增加了项目上下文发现、签名感知的任务工作流、安全本地同步和辅助工具回归测试，同时继续保持公开 skill 与具体研究项目解耦。
+最近的标签与元数据版本为 `v0.1.1`。此后的工作树增加了项目上下文发现、按意图路由的安全合同、输出/谱系/留存
+指南、安全本地同步和更完整的发布检查，同时继续保持公开 skill 与具体研究项目解耦。
+
+这些内容是通用指南和验证接口。具体研究仓库仍须在本地实现并测试适用的状态、锁、科学决策、输出和留存行为；
+本次通用 skill 更新不表示任何项目任务代码或项目数据已经迁移。
 
 示例和静态检查只用于 skill 验证和脚本卫生检查，不证明物理正确性、数值收敛或论文级可用性。
 

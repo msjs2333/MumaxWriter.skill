@@ -63,6 +63,11 @@ The `mumax3` skill helps an AI agent:
 - Parameterize mumax3 scripts for batch simulations.
 - Structure scripts around mesh, geometry, materials, initial states, fields, damping, output, and run stages.
 - Decide when to use Python to generate scripts, run mumax3, organize outputs, fit results, and plot figures.
+- Route compact status/monitor and product-only work without loading unrelated API, geometry, or large field data.
+- Preserve one writer per mutable resource, SHA256 lineage, complete all-vector decision windows, and a separate human
+  scientific-classification layer.
+- Specify generic contracts for background handoff/cancellation, output reconciliation, profiles, product manifests, and safe
+  retention without embedding one project's thresholds or paths.
 
 ## Installation For Local Use
 
@@ -117,13 +122,19 @@ Run local validation from the repository root:
 python tests\validate_release.py
 ```
 
-The validator uses only the Python standard library. It compiles helper scripts, checks template parameter examples, runs conservative static checks on expected-output `.mx3` files, and runs `mumax3 -vet` when mumax3 is available on `PATH`.
+The validator uses only the Python standard library. It compiles helper scripts, checks template parameter examples, verifies
+the safety/reference contract surface and project independence, runs conservative static checks on expected-output `.mx3`
+files, and runs `mumax3 -vet` when mumax3 is available on `PATH`.
 
 ## Current Status
 
 The latest tagged metadata release is `v0.1.1`. The working tree after that release adds project-context discovery,
-signature-aware workflow guidance, safer local synchronization, and expanded helper regression coverage while keeping the
-published skill project-agnostic.
+intent-routed safety contracts, output/lineage/retention guidance, safer local synchronization, and expanded release checks
+while keeping the published skill project-agnostic.
+
+These contracts are generic guidance and a validation surface. A research repository must implement and test the applicable
+state, lock, decision, output, and retention behavior locally; this skill update does not claim to migrate project task code
+or project data.
 
 The examples and static checks are intended for skill validation and script hygiene. They do not prove physical correctness, numerical convergence, or publication readiness.
 

@@ -7,12 +7,22 @@
 - Added repository-local project-context discovery without embedding private or fast-changing model defaults in the generic skill.
 - Added task workflow guidance for signatures, checkpoint hashes, resume behavior, ETA, path overrides, manual review, and layered tests.
 - Added a backed-up, hash-verified local skill synchronization helper and helper regression tests.
+- Added four explicit workflow invariants: one writer per mutable resource, SHA256 lineage, all-vector/all-frame decision gates,
+  and separation of automatic state from human scientific classification.
+- Added intent-based reference routing for compact status/monitor work, product-only plotting, physics changes, descendant
+  preparation, and long background operations.
+- Added contracts for resilient state I/O, owner-identified locks, ancestor gates, local handoffs, cancellation typing,
+  operation ETA, minimal-import doctor checks, and GPU capacity leases.
+- Added output-directory/timeline reconciliation, repository-relative identity, initial-state roles, output/plot profiles,
+  product DAGs, protocol-derived capacity estimates, and verified retention/release guidance.
+- Added release checks for required safety contracts, local reference links, and exclusion of project-specific literals.
 
 ### Changed
 
 - Expanded region, local anisotropy, spin-current mask, and staged-drive guidance.
 - Made static mesh/output checks case-insensitive and limited protected-name warnings to core mumax3 quantities and constants.
 - Extended case-status collection with manifest, provenance, analysis-freshness, and manual-review fields.
+- Expanded helper regression coverage from implementation helpers to the generic workflow and reproducibility contract surface.
 
 ## 0.1.1 - 2026-05-15
 

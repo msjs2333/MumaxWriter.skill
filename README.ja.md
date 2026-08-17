@@ -61,6 +61,9 @@ MumaxWriter.skill/
 - バッチシミュレーション用にスクリプトをパラメータ化する。
 - mesh、geometry、material、initial state、field、output、run stage を整理する。
 - パラメータスイープ、フィッティング、可視化、出力整理には Python orchestration を使う方針を示す。
+- status/monitor や product-only plotting では、無関係な API、geometry history、大容量 field data を読まずに最小 context を選ぶ。
+- mutable resource ごとの single writer、SHA256 lineage、全 frame・全 vector の decision gate、人間による科学分類の分離を維持する。
+- background handoff/cancel、output reconciliation、profile、product manifest、安全な retention の汎用 contract を示す。
 
 ## Local Installation
 
@@ -90,11 +93,19 @@ Repository root で local validation を実行します。
 python tests\validate_release.py
 ```
 
-この validator は Python standard library のみを使います。helper script の compile、template parameter example、expected-output `.mx3` の static check、利用可能な場合の `mumax3 -vet` を実行します。
+この validator は Python standard library のみを使います。helper script の compile、template parameter example、
+safety/reference contract と project independence、expected-output `.mx3` の static check、利用可能な場合の
+`mumax3 -vet` を検証します。
 
 ## Current Status
 
-最新のタグ付きメタデータ release は `v0.1.1` です。その後の作業ツリーでは、project context discovery、signature-aware workflow、安全なローカル同期、helper regression test が追加されています。公開 skill は特定の研究プロジェクトに依存しません。
+最新のタグ付きメタデータ release は `v0.1.1` です。その後の作業ツリーでは、project context discovery、
+intent-routed safety contract、output/lineage/retention guidance、安全なローカル同期、release check が追加されています。
+公開 skill は特定の研究プロジェクトに依存しません。
+
+これらは汎用 guidance と validation surface です。各 research repository は state、lock、scientific decision、
+output、retention の必要な実装と test をローカルに持つ必要があり、この skill 更新だけで project task code や
+project data が移行済みになったとはみなしません。
 
 Examples and static checks are for skill validation and script hygiene. They do not prove physical correctness, numerical convergence, or publication readiness.
 
