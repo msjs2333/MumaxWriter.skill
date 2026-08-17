@@ -21,6 +21,21 @@ Use this skill to produce reliable mumax3 `.mx3` scripts and surrounding automat
 8. Record parameters, generated scripts, input hashes, case signatures, logs, output paths, and analysis provenance.
 9. Keep simulation completion, analysis completion, and scientific classification as separate states.
 
+## Safety Invariants
+
+These invariants apply to orchestration, analysis, reuse, and cleanup. Project-local automation may strengthen them but must
+not weaken them.
+
+1. **Single writer:** only one writer may mutate a declared output resource at a time. Use separate resource locks for
+   simulation, analysis, and render/manifest work; a GPU capacity lease is not a writer lock.
+2. **SHA256 lineage:** bind reused inputs, generated scripts, frame manifests, and derived products to content hashes.
+   Filenames, absolute paths, and modification times are not scientific identity.
+3. **All-vector decision gates:** orientation, reset, switching, and descendant decisions must evaluate every required frame
+   in the declared decision window with all required vector components, including `mx`, `my`, and `mz` when magnetization
+   orientation is at issue. A final frame or one display component cannot hide an intermediate failure.
+4. **Manual/automatic separation:** automated execution, evidence, tracker, and gate state must not create or overwrite a
+   human scientific classification. A tracking gap is not by itself a physical conclusion.
+
 ## Syntax Guardrails
 
 mumax3 uses a limited Go-like script language. Do not generate full Go.
@@ -46,6 +61,20 @@ Read `references/language_subset.md` when validating syntax. Read `references/an
 
 ## Reference Selection
 
+- Pure `status`, ETA, monitor, or cancel work: read `references/project_workflows.md` and the current operation/handoff only.
+  Do not load the API catalog, geometry history, or large field outputs unless the status evidence is insufficient.
+- Plot, GIF, or summary-only work: read `references/output_and_reproducibility.md`, the exact input manifest, and the selected
+  analysis/plot profile. Read model references only when a plotted quantity or scientific purpose is unresolved.
+- Geometry, material, initial-state, field, source, torque, or protocol changes: read
+  `references/project_discovery.md`, the complete active project context, the active source/template, and the applicable API
+  references. Verify parent SHA256, initial-state role, and allowed field protocol before reuse.
+- Descendant preparation or scientific classification: read the versioned decision contract, fresh gate summaries, and the
+  complete ancestor chain. Missing or stale required evidence fails closed.
+- Long background work: read `references/project_workflows.md` for the local handoff/monitor contract. Keep monitoring input
+  compact; do not send OVF data, full timelines, or complete case records through routine polling.
+
+Technical references:
+
 - Normal script generation: read `references/api_index.md` first, then `references/api_patterns.md`.
 - Syntax uncertainty: read `references/language_subset.md` and `references/anti_patterns.md`.
 - Existing-script review or disputed identifiers: check `references/api_full.md`.
@@ -67,6 +96,9 @@ Before changing an existing repository, inspect its scripts, templates, root doc
 `docs/mumax3_reference/current_project_context.md` exists, read it completely before changing geometry, materials, initial
 states, fields, sources, torque, scans, checkpoints, or postprocessing. Treat that project-local file and the source scripts
 it links as authoritative over bundled examples or remembered defaults.
+
+For status/ETA/cancel and presentation-only work, load only the compact current-operation record, exact product manifest, and
+the relevant profile. Do not bulk-read large outputs or historical context merely because the repository contains them.
 
 ## Static Review Helper
 
@@ -92,6 +124,8 @@ Before finalizing `.mx3` code:
 - Output filenames include key parameters or are placed in case-specific directories.
 - Scripts needed by later stages save the expected OVF files.
 - Reused OVF inputs match the recorded geometry, mesh, and SHA256.
+- Reused initial states have a compatible physical role and field protocol; SHA256 alone is not a physical validity gate.
+- Decision plots contain every quantity required by their versioned decision contract and cover its complete frame window.
 - Local anisotropy or torque masks do not silently overwrite absorber regions or other material assignments.
 - Batch-generation code records signatures, parameters, inputs, logs, and analysis provenance.
 - Automated topology or connected-component metrics remain supporting evidence when strong deformation or multiple textures make pairing ambiguous.
