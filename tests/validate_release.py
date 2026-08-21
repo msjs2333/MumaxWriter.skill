@@ -85,6 +85,11 @@ REFERENCE_CONTRACTS = {
         "## Output And Sampling Profiles",
         "## Analysis Products And Plot Profiles",
         "## Retention And Safe Release",
+        "every destructive release candidate",
+        "must be hashed again at apply time",
+        "matching terminal journal declares release",
+        "tombstone exists",
+        "immutable tombstone",
     ),
 }
 

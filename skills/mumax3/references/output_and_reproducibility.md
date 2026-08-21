@@ -160,6 +160,37 @@ verify every SHA256 (and archive integrity where applicable), test the recovery 
 plan SHA and file list. Any failure preserves the source. Unknown references fail closed to pinned; probability is not a safe
 garbage-collection rule.
 
+Treat backup availability as necessary but not sufficient for release. Make a dataset eligible only after it is explicitly
+`sealed_for_retention`: simulation, analysis, profiles, reference closure, and manual-evidence inputs are stable and no related
+writer is active. Reopening the dataset, adding a reference, or changing a profile/classification expires prior coverage and
+retention plans.
+
+Identify a mounted cold volume by a persistent volume/backup-set identity, physical-device evidence, and an immutable snapshot
+manifest SHA256. A drive letter, mount path, matching filename, size, or modification time is not backup identity. Routine
+discovery may use size, mtime, stable file IDs, and cached hashes to shortlist work, but every destructive release candidate
+must be hashed again at apply time. For archives, distinguish byte-exact container recovery from expanded-member equivalence;
+the latter requires a complete normalized member set and per-member SHA256 and cannot promise identical archive bytes.
+
+Keep copy-only synchronization and source release as separate plans, transactions, locks, and user confirmations. Publish
+backup snapshots immutably; never propagate a source deletion into the backup as part of prune. Backup-side garbage collection
+needs its own content-addressed plan and authorization. If source release leaves one physical copy, report that it is now the
+sole archive rather than a redundant backup; require policy or exact-plan acceptance appropriate to the retention class.
+
+At release time, re-discover the bound volume, validate the current snapshot and dataset seal, reject active or unknown writers,
+bind the exact source root, and verify complete recovery for each candidate before removing source bytes. Use a durable journal,
+same-volume quarantine, no-overwrite moves, bounded batches, and fail-closed path/reparse checks. A recovery operation restores
+missing source bytes even if the old retention decision has since expired; expiration is a reason to restore, not to strand data.
+
+Treat a prepared release manifest or audit as committed only when a matching terminal journal declares release and no rollback
+tombstone exists. On failure, rollback or recovery records an immutable tombstone so orphaned prepared records cannot claim a
+successful release. Preserve compact snapshot roots, transfer/recovery audits, release manifests, journals, tombstones, and
+authorization records independently from the large cold volume.
+
+Limit each destructive plan by declared dataset, file count, and bytes. Budget enough independent temporary space for the
+release batch, archive expansion, recovery copy, journal, and protocol margin; reduce the batch instead of replacing complete
+recovery validation with sampling. Reject case-folding, Unicode-normalization, reserved-name, path-traversal, duplicate-member,
+and link/reparse-point ambiguities rather than silently renaming objects.
+
 ## Helper Script Invocations
 
 Render a repository template after listing the required placeholders:

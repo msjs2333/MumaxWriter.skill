@@ -81,7 +81,8 @@ Technical references:
 - Runnable examples: read `references/examples.md`.
 - Structure-specific modeling: read `references/structures.md`.
 - Repository-specific work: read `references/project_discovery.md`, then any discovered project context.
-- Batch runs, output folders, OVF/table/log handling, and metadata: read `references/output_and_reproducibility.md`.
+- Batch runs, output folders, OVF/table/log handling, metadata, cold copies, retention, or release: read
+  `references/output_and_reproducibility.md`.
 - Task CLIs, signatures, resume behavior, ETA, manual review, and test layering: read `references/project_workflows.md`.
 - Advanced features or version-sensitive behavior: read `references/compatibility_notes.md` and the official mumax3 API.
 - Parameter scans, fitting, optimization, or plotting: read `references/parameter_sweep.md`.
@@ -128,5 +129,7 @@ Before finalizing `.mx3` code:
 - Decision plots contain every quantity required by their versioned decision contract and cover its complete frame window.
 - Local anisotropy or torque masks do not silently overwrite absorber regions or other material assignments.
 - Batch-generation code records signatures, parameters, inputs, logs, and analysis provenance.
+- Data considered for release is sealed against new writers, references, profiles, and manual-evidence changes.
+- A cold copy is bound to stable volume/snapshot identity and verified recovery; a drive letter or mirrored path is not proof.
 - Automated topology or connected-component metrics remain supporting evidence when strong deformation or multiple textures make pairing ambiguous.
 
