@@ -72,6 +72,8 @@ Common scalar parameters:
 - `Dind`, `Dbulk`
 - `Temp`
 
+For thermal noise, `ThermSeed(seed)` sets its random seed; `randSeed(seed)` controls the general random functions instead. See `compatibility_notes.md` for version-sensitive use.
+
 Common vector parameters:
 
 - `anisU`, `anisC1`, `anisC2`

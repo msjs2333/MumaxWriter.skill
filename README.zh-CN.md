@@ -36,8 +36,6 @@ MumaxWriter.skill/
         api_full.md
         examples.md
         structures.md
-        project_discovery.md
-        project_workflows.md
         parameter_sweep.md
         output_and_reproducibility.md
         compatibility_notes.md
@@ -60,9 +58,9 @@ MumaxWriter.skill/
 - 审查常见 mumax3 语法和 API 错误。
 - 为批量仿真参数化脚本。
 - 按 mesh、geometry、material、initial state、field、output、run stage 组织脚本。
-- 在参数扫描、拟合、绘图和结果整理场景中建议使用 Python 包装 mumax3。
+- 原生循环适合顺序扫描，Python 可用于独立 case 编排、拟合与绘图。
 - 让纯 status/monitor 和产品级绘图按最小上下文执行，不默认加载无关 API、几何历史或大体积场数据。
-- 简短保留单 writer、SHA256 追溯、按问题需要的充分矢量证据，以及人工/自动结论分离原则。
+- 简短保留单 writer、输入可追溯、证据充分及人工/自动结论分离；具体哈希与门禁按任务需要采用。
 - 项目字段、后台调度、备份/释放协议和代理分工交由项目指导；通用参考按请求加载，不强制每个任务采用同一框架。
 
 ## 本地安装
@@ -108,7 +106,7 @@ Use $mumax3 to write or review this mumax3 script.
 Use $mumax3 to write a minimal mumax3 thin-film relaxation script with SI units, table output, and a final OVF save.
 ```
 
-参数扫描任务应让 Python 负责 case 生成、metadata、日志和后处理；每个仿真仍保持为原生 mumax3 `.mx3` 脚本。
+顺序扫描可直接使用 MuMax3 循环；独立 case 可选 Python 编排。状态助手仅适用于其约定目录，不是任意 `.out` 扫描器，使用前查看 `--help`。
 
 ## 本地验证
 

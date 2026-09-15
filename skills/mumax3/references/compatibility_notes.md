@@ -21,7 +21,7 @@ mumax3 reported a non-fatal CPU-info probe error in this environment, while GPU 
 
 ## Script Language Boundary
 
-mumax3 input syntax is Go-like and case-insensitive for API identifiers, but it is not a full Go runtime. Keep filesystem operations, JSON/CSV parsing, plotting, optimization loops, and multiprocessing in Python.
+mumax3 input syntax is Go-like and case-insensitive for API identifiers, but it is not a full Go runtime. Use host-side tools for filesystem/JSON/CSV processing, plotting and multiprocessing. Native loops are appropriate for sequential field steps; external orchestration is optional.
 
 ## Advanced Features
 
@@ -32,7 +32,7 @@ Check `api_full.md` and official docs before using:
 - Custom quantities and custom effective field terms.
 - MFM helpers.
 - Slicing/cropping helpers beyond simple `SaveAs`.
-- Thermal noise and random seeding.
+- Thermal noise: `Temp` controls temperature and `ThermSeed(int)` seeds thermal noise; `randSeed(int)` seeds general random functions. Check solver/timestep suitability and reproducibility for the intended model and installed version.
 - Magnetoelastic or extension APIs.
 
 ## Official Semantic Anchors

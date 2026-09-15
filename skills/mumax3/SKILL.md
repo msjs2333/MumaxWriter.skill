@@ -18,17 +18,14 @@ Read the target script and relevant task instructions. Use current source and in
 - **Missing/disputed API:** search [api_full.md](references/api_full.md); consult [compatibility_notes.md](references/compatibility_notes.md) and the official API for version-sensitive behavior. Do not invent identifiers.
 - **Model-specific help:** choose [structures.md](references/structures.md) or [examples.md](references/examples.md).
 - **Output or sampling design:** use [output_and_reproducibility.md](references/output_and_reproducibility.md).
-- **Batch or staged execution:** use [parameter_sweep.md](references/parameter_sweep.md) or [project_workflows.md](references/project_workflows.md) when designing that workflow, not for each status query.
-- **Unfamiliar repository:** [project_discovery.md](references/project_discovery.md) gives a short discovery approach.
-
-For status/ETA, read the task's compact state and supported entry point. For presentation-only changes, use the exact plot inputs or cache and plotting code. Expand context only when the requested decision needs it.
+- **Parameter scans:** use [parameter_sweep.md](references/parameter_sweep.md) to choose native sequential sweeps or external case orchestration.
 
 ## Scientific and execution principles
 
 - **Single writer:** coordinate concurrent changes to the same output; independent outputs need not serialize. Use the project's existing mechanism when present.
-- **SHA256 lineage:** keep critical reused inputs and scientific derivatives traceable to their actual content. Apply hash checks where reuse, publication, or data release requires them; a matching hash alone does not establish physical compatibility.
-- **Full-vector evidence when needed:** orientation or switching decisions require adequate vector evidence over the relevant window. The scientific question determines components, sampling and thresholds; a display image need not show every component. Automatic gates and ancestor checks apply when the task's decision depends on them, not to every script or plot.
-- **Human/automatic separation:** distinguish simulation completion, analysis findings and human scientific conclusions. Automated metrics do not silently overwrite a human classification; missing tracking evidence is not itself a physical conclusion.
+- **Traceable inputs:** keep reused inputs and derived results identifiable; content identity alone does not establish physical compatibility.
+- **Adequate evidence:** choose quantities and sampling for the scientific question. Orientation or switching may need vector evidence over a time window; a display image need not show every component.
+- **Human/automatic separation:** distinguish execution, automated findings and human interpretation; automatic results do not silently replace a human classification.
 
 ## Check the changed behavior
 
@@ -39,8 +36,6 @@ For physical edits, check SI units, mesh/cell size, geometry and region assignme
 ## Helpers
 
 - `scripts/render_template.py`: render `assets/templates/*.mx3.template` using JSON or `KEY=VALUE` parameters.
-- `scripts/collect_case_status.py`: report file/metadata status; inspect `--help` and the task's conventions before using it. It does not validate physics.
-- `scripts/sync_local_skill.py`: maintenance only; preview with `--dry-run` before an authorized `--apply`, which backs up the prior installation.
 
 Project-specific state schemas, monitoring schedules, storage/prune protocols, and agent assignments belong in project guidance, not in this skill's default workflow.
 

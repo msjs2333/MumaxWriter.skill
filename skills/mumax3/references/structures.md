@@ -7,13 +7,13 @@ Use this reference to choose a compact modeling pattern for common structures. I
 - Use one or a few cells through thickness when the model is effectively two-dimensional.
 - Prefer mesh dimensions with small prime factors for GPU performance.
 - Start with `SetGeom(Rect(Lx, Ly))` or the full mesh box.
-- Add `TableAdd(m)` and at least one final `SaveAs(m, ...)`.
+- Choose table quantities for averages and field saves for spatial analysis or state reuse.
 
 ## Material Heterostructure
 
 - Define each material with `DefRegion(region, shape)` or `DefRegionCell`.
 - Assign material quantities per region with `Msat.SetRegion`, `Aex.SetRegion`, `alpha.SetRegion`, anisotropy, DMI, or spin-torque parameters as needed.
-- Save `regions` before running if the geometry is nontrivial.
+- Save `regions` when inspecting or reusing a nontrivial region layout would help.
 - Remember that each cell has one region; overlapping shapes require deliberate ordering.
 
 ## Domain Wall
@@ -27,7 +27,7 @@ Use this reference to choose a compact modeling pattern for common structures. I
 
 - Use disk or square geometry with `Circle`, `Cylinder`, `Square`, or `Rect`.
 - Initialize with `Vortex(circulation, polarization)` when the built-in configuration matches the task.
-- Track core motion through saved magnetization snapshots or table quantities suitable for later Python analysis.
+- For core-motion studies, choose field snapshots or suitable table quantities for trajectory analysis.
 
 ## Skyrmion
 
@@ -37,10 +37,10 @@ Use this reference to choose a compact modeling pattern for common structures. I
 
 ## FMR And Spin Waves
 
-- Build a relaxed static state first and save it.
+- For response about equilibrium, prepare a relaxed static state; save it if needed for reuse or reference subtraction.
 - Apply a small uniform or local time-dependent field with `B_ext` or `B_ext.Add(mask, expression)`.
 - Keep the dynamic expression inline if it depends on `t`.
-- Save time-resolved tables and snapshots at intervals that can resolve the highest requested frequency.
+- Use time-resolved averages for global response, and field snapshots when spatial modes or propagation are needed. Choose sampling and duration for the requested frequency range and resolution.
 
 ## Periodic Systems
 

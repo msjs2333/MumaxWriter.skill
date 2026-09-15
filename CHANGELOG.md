@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### Third-round generalization (2026-09-15)
+
+- Made native sequential scans and external case orchestration explicit alternatives; choose tables, fields and checkpoints from the scientific question rather than a universal output recipe.
+- Kept concise coordination, traceability, evidence and human/automatic principles without requiring project schemas or ancestor tracking. Merged useful input-reuse guidance into the output reference and removed `project_discovery.md` and `project_workflows.md`.
+- Retained the layout-specific status collector as optional compatibility tooling, not a default workflow. Invalid optional metadata is reported; analysis without comparable provenance is unverified rather than fresh. Zero discovered cases produces a diagnostic on stderr; CSV columns remain compatible.
+- Preserved static checking, templates, installation backup/hash checks and existing project runtime protections.
+
 ### Second-round simplification (2026-09-15)
 
 - Shortened the entry point and four workflow/output references; read task-specific context instead of a mandatory full project history.

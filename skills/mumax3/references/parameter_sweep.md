@@ -1,12 +1,12 @@
-﻿# Parameter Sweep Guidance
+# Parameter Sweep Guidance
 
-Use Python for case generation, execution, analysis, fitting, and plotting. Use mumax3 only for the simulation itself.
+Choose native MuMax3 loops for sequential parameter steps, such as a hysteresis sweep that continues from the previous state. External tools such as Python are useful for independent cases, parallel execution, fitting, and plotting; they are not required for every scan.
 
 ## Plan And Execute
 
 Define the parameters, units, case-selection rule, and expected analysis before generating a sweep. Begin with a small pilot
 when it can expose rendering, resource, or interpretation problems cheaply. Render each case's `.mx3` script from its chosen
-parameters, capture engine logs, and make rerun behavior explicit rather than silently overwriting completed outputs.
+parameters when generating independent cases, capture useful engine logs, and make rerun behavior explicit rather than silently overwriting completed outputs.
 
 Use the case record and output/sampling guidance in `output_and_reproducibility.md` instead of maintaining a second required
 layout or metadata list. Isolate cases so their scripts and MuMax3 output directories cannot collide.

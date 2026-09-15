@@ -36,8 +36,6 @@ MumaxWriter.skill/
         api_full.md
         examples.md
         structures.md
-        project_discovery.md
-        project_workflows.md
         parameter_sweep.md
         output_and_reproducibility.md
         compatibility_notes.md
@@ -63,8 +61,7 @@ The `mumax3` skill helps an AI agent:
 - Parameterize mumax3 scripts for batch simulations.
 - Structure scripts around mesh, geometry, materials, initial states, fields, damping, output, and run stages.
 - Decide when to use Python to generate scripts, run mumax3, organize outputs, fit results, and plot figures.
-- Route compact status/monitor and product-only work without loading unrelated API, geometry, or large field data.
-- Keep concise principles for coordinating writers, SHA256 traceability, sufficient vector evidence when needed, and separation of automatic findings from human classification.
+- Keep concise principles for coordinating writers, traceable inputs, adequate evidence, and separation of automatic findings from human interpretation.
 - Leave task schemas, background scheduling, storage/release protocols and agent assignments to project guidance; load technical references only for the requested work.
 
 ## Installation For Local Use
@@ -110,7 +107,7 @@ Use $mumax3 to write or review this mumax3 script.
 Use $mumax3 to write a minimal mumax3 thin-film relaxation script with SI units, table output, and a final OVF save.
 ```
 
-For parameter sweeps, ask the skill to keep Python responsible for case generation, metadata, logs, and postprocessing while keeping each simulation in native mumax3 `.mx3` scripts.
+Sequential scans can use native MuMax3 loops; independent cases may use Python orchestration. The optional `collect_case_status.py` expects a documented case layout, not arbitrary `.out` directories; see its `--help` and the output reference.
 
 ## Local Validation
 
@@ -128,7 +125,7 @@ The validator uses only the Python standard library. The default full scope chec
 
 ## Current Status
 
-The latest tagged metadata release is `v0.1.1`. The second-round working tree reduces default instructions and delegates project governance to local guidance while preserving MuMax3 references, helpers and backed-up synchronization.
+The latest tagged metadata release is `v0.1.1`. Third-round changes further separate MuMax3 capabilities from project governance, remove two redundant workflow references and correct optional collector metadata handling. Templates and backed-up synchronization remain compatible.
 
 These contracts are generic guidance and a validation surface. A research repository must implement and test the applicable
 state, lock, decision, output, and retention behavior locally; this skill update does not claim to migrate project task code

@@ -298,7 +298,7 @@ Cropping helpers are listed in `api_full.md#slicing-and-dicing-output`.
 
 Use a small, purposeful output set instead of saving every quantity.
 
-- `m`: magnetization state; save as OVF and table-average when dynamics matter.
+- `m`: magnetization state; use table averages for aggregate response, or OVF for spatial analysis and state reuse.
 - `B_eff`: effective field; useful for diagnostics after relaxation.
 - `E_total`: scalar energy; useful in minimization and hysteresis checks.
 - `MaxAngle`: neighbor-spin angle; useful for mesh-quality and convergence

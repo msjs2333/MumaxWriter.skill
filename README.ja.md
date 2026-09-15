@@ -36,8 +36,6 @@ MumaxWriter.skill/
         api_full.md
         examples.md
         structures.md
-        project_discovery.md
-        project_workflows.md
         parameter_sweep.md
         output_and_reproducibility.md
         compatibility_notes.md
@@ -60,9 +58,9 @@ MumaxWriter.skill/
 - mumax3 の構文や API のよくあるミスをレビューする。
 - バッチシミュレーション用にスクリプトをパラメータ化する。
 - mesh、geometry、material、initial state、field、output、run stage を整理する。
-- パラメータスイープ、フィッティング、可視化、出力整理には Python orchestration を使う方針を示す。
+- 逐次スイープには MuMax3 のループ、独立ケースには必要に応じて Python orchestration を利用する。
 - status/monitor や product-only plotting では、無関係な API、geometry history、大容量 field data を読まずに最小 context を選ぶ。
-- single writer、SHA256 traceability、目的に応じた vector evidence、人間と自動判定の分離を短い原則として維持する。
+- single writer、入力の追跡可能性、目的に十分な証拠、人間と自動判定の分離を維持し、ハッシュやゲートは必要な場合に使う。
 - task schema、background scheduling、storage/release、agent 分担は project guidance に委ね、reference は必要時に読む。
 
 ## Local Installation
