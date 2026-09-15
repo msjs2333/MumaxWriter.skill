@@ -47,6 +47,8 @@ def load_params(path: Path) -> tuple[dict[str, Any], str]:
         return {}, ""
     except json.JSONDecodeError as exc:
         return {}, f"invalid params.json: {exc}"
+    except UnicodeError as exc:
+        return {}, f"cannot decode params.json as UTF-8: {exc}"
     except OSError as exc:
         return {}, f"cannot read params.json: {exc}"
     if not isinstance(data, dict):
@@ -54,12 +56,20 @@ def load_params(path: Path) -> tuple[dict[str, Any], str]:
     return data, ""
 
 
-def load_optional_json(path: Path) -> dict[str, Any]:
+def load_optional_json(path: Path) -> tuple[dict[str, Any], str]:
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
-    except (FileNotFoundError, OSError, json.JSONDecodeError):
-        return {}
-    return data if isinstance(data, dict) else {}
+    except FileNotFoundError:
+        return {}, ""
+    except json.JSONDecodeError as exc:
+        return {}, f"invalid {path.name}: {exc}"
+    except UnicodeError as exc:
+        return {}, f"cannot decode {path.name} as UTF-8: {exc}"
+    except OSError as exc:
+        return {}, f"cannot read {path.name}: {exc}"
+    if not isinstance(data, dict):
+        return {}, f"{path.name} is not a JSON object"
+    return data, ""
 
 
 def first_value(data: dict[str, Any], keys: tuple[str, ...]) -> str:
@@ -140,10 +150,15 @@ def summarize_case(case_dir: Path, root: Path, result_root: Path | None = None) 
         relative_case = Path(case_dir.name)
     result_dir = result_root / relative_case if result_root else case_dir
     manifest_path = find_manifest(case_dir, root)
-    manifest = load_optional_json(manifest_path) if manifest_path else {}
-    run_record = load_optional_json(case_dir / "run_record.json")
-    analysis_record = load_optional_json(result_dir / "analysis_record.json")
-    manual_review = load_optional_json(result_dir / "manual_review.json")
+    manifest, manifest_error = load_optional_json(manifest_path) if manifest_path else ({}, "")
+    run_record, run_record_error = load_optional_json(case_dir / "run_record.json")
+    analysis_record, analysis_error = load_optional_json(result_dir / "analysis_record.json")
+    manual_review, manual_review_error = load_optional_json(result_dir / "manual_review.json")
+    optional_errors = [
+        message
+        for message in (manifest_error, run_record_error, analysis_error, manual_review_error)
+        if message
+    ]
 
     config_signature = first_value(
         params,
@@ -176,8 +191,14 @@ def summarize_case(case_dir: Path, root: Path, result_root: Path | None = None) 
     else:
         provenance_state = "unrecorded"
 
+    analysis_evidence_matches = bool(dynamic_signature and analysis_dynamic and dynamic_signature == analysis_dynamic)
     if analysis_record:
-        analysis_status = "analysis_fresh" if not stale else "analysis_stale"
+        if stale:
+            analysis_status = "analysis_stale"
+        elif analysis_evidence_matches:
+            analysis_status = "analysis_fresh"
+        else:
+            analysis_status = "analysis_unverified"
     else:
         analysis_status = ""
     manual_review_status = first_value(manual_review, ("status", "classification")) or (
@@ -208,7 +229,11 @@ def summarize_case(case_dir: Path, root: Path, result_root: Path | None = None) 
         "stdout_log_count": len(stdout_logs),
         "stderr_log_count": len(stderr_logs),
         "stderr_nonempty": count_nonempty(stderr_logs),
-        "error_message": error_message or str(params.get("error_message", "")),
+        "error_message": "; ".join(
+            message
+            for message in (error_message, str(params.get("error_message", "")), *optional_errors)
+            if message
+        ),
     }
     row["derived_status"] = derive_status(row)
     return row
@@ -229,7 +254,11 @@ def write_json(path: Path, rows: list[dict[str, Any]]) -> None:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Collect conservative mumax3 case status rows.")
-    parser.add_argument("root", type=Path, help="case directory or directory containing case directories")
+    parser.add_argument(
+        "root",
+        type=Path,
+        help="case directory or directory containing case directories (a case has params.json or a top-level .mx3 file)",
+    )
     parser.add_argument("--recursive", action="store_true", help="scan nested directories for cases")
     parser.add_argument("--result-root", type=Path, help="parallel result root containing analysis and manual-review records")
     parser.add_argument("--csv", type=Path, help="write a CSV summary")
@@ -248,6 +277,12 @@ def main(argv: list[str]) -> int:
         return 2
 
     case_dirs = find_case_dirs(root, args.recursive)
+    if not case_dirs:
+        print(
+            "No case directories matched; expected params.json or a top-level .mx3 file. "
+            "An .out directory alone is not a case.",
+            file=sys.stderr,
+        )
     rows = [summarize_case(case_dir, root, args.result_root) for case_dir in case_dirs]
 
     if args.csv:

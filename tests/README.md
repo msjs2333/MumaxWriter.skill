@@ -1,5 +1,7 @@
 # Release Validation
 
+Collector regressions use synthetic cases to distinguish missing/corrupt metadata and comparable/unverified analysis signatures. They do not require research outputs or validate scientific classification. Reference removal is checked through current links, not fixed document names.
+
 Run the release checks from the repository root.  The default remains the full
 release candidate check:
 

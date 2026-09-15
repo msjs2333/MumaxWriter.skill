@@ -128,6 +128,95 @@ class StatusCollectorTests(unittest.TestCase):
         self.assertEqual(rows[0]["manual_review_status"], "retained")
         self.assertEqual(rows[0]["provenance_state"], "recorded")
 
+    def test_analysis_without_comparable_signature_is_unverified(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            case = base / "case_a"
+            case.mkdir()
+            (case / "params.json").write_text(json.dumps({"case_id": "case_a"}), encoding="utf-8")
+            (case / "analysis_record.json").write_text(json.dumps({"result": "present"}), encoding="utf-8")
+            proc = run(str(COLLECTOR), str(case))
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        rows = list(csv.DictReader(proc.stdout.splitlines()))
+        self.assertEqual(rows[0]["analysis_status"], "analysis_unverified")
+        self.assertNotEqual(rows[0]["analysis_status"], "analysis_fresh")
+
+    def test_optional_json_errors_are_reported_and_signature_mismatch_is_stale(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            case = base / "case_a"
+            case.mkdir()
+            (case / "params.json").write_text(
+                json.dumps({"case_id": "case_a", "dynamic_signature": "expected"}),
+                encoding="utf-8",
+            )
+            (case / "analysis_record.json").write_text(
+                json.dumps({"dynamic_signature": "different"}), encoding="utf-8"
+            )
+            (case / "manual_review.json").write_text("[]", encoding="utf-8")
+            proc = run(str(COLLECTOR), str(case))
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        rows = list(csv.DictReader(proc.stdout.splitlines()))
+        self.assertEqual(rows[0]["analysis_status"], "analysis_stale")
+        self.assertEqual(rows[0]["provenance_state"], "stale")
+        self.assertIn("manual_review.json", rows[0]["error_message"])
+
+    def test_invalid_optional_json_is_reported_while_missing_optional_json_is_not(self) -> None:
+        for label, content in (("invalid_json", "{"), ("invalid_utf8", b"\xff")):
+            with self.subTest(label=label), tempfile.TemporaryDirectory() as tmp:
+                base = Path(tmp)
+                case = base / "case_a"
+                case.mkdir()
+                (case / "params.json").write_text("{}", encoding="utf-8")
+                record = case / "analysis_record.json"
+                if isinstance(content, bytes):
+                    record.write_bytes(content)
+                else:
+                    record.write_text(content, encoding="utf-8")
+                proc = run(str(COLLECTOR), str(case))
+                self.assertEqual(proc.returncode, 0, proc.stderr)
+                rows = list(csv.DictReader(proc.stdout.splitlines()))
+                self.assertIn("analysis_record.json", rows[0]["error_message"])
+                self.assertEqual(rows[0]["derived_status"], "needs_review")
+                self.assertNotIn("run_record.json", rows[0]["error_message"])
+
+    def test_out_only_root_reports_no_cases_on_stderr_without_csv_rows(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            (base / "stage.out").mkdir()
+            proc = run(str(COLLECTOR), str(base))
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertTrue(proc.stderr.strip())
+        reader = csv.DictReader(proc.stdout.splitlines())
+        self.assertEqual(
+            reader.fieldnames,
+            [
+                "case_id",
+                "case_dir",
+                "result_dir",
+                "reported_status",
+                "derived_status",
+                "params_json",
+                "manifest_json",
+                "config_signature",
+                "input_sha256",
+                "dynamic_signature",
+                "analysis_status",
+                "manual_review_status",
+                "provenance_state",
+                "mx3_count",
+                "out_dir_count",
+                "ovf_count",
+                "table_count",
+                "stdout_log_count",
+                "stderr_log_count",
+                "stderr_nonempty",
+                "error_message",
+            ],
+        )
+        rows = list(reader)
+        self.assertEqual(rows, [])
+
 
 class SyncSkillTests(unittest.TestCase):
     def test_dry_run_then_exact_apply_with_backup(self) -> None:
