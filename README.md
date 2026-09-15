@@ -64,10 +64,8 @@ The `mumax3` skill helps an AI agent:
 - Structure scripts around mesh, geometry, materials, initial states, fields, damping, output, and run stages.
 - Decide when to use Python to generate scripts, run mumax3, organize outputs, fit results, and plot figures.
 - Route compact status/monitor and product-only work without loading unrelated API, geometry, or large field data.
-- Preserve one writer per mutable resource, SHA256 lineage, complete all-vector decision windows, and a separate human
-  scientific-classification layer.
-- Specify generic contracts for background handoff/cancellation, output reconciliation, profiles, product manifests, and safe
-  retention without embedding one project's thresholds or paths.
+- Keep concise principles for coordinating writers, SHA256 traceability, sufficient vector evidence when needed, and separation of automatic findings from human classification.
+- Leave task schemas, background scheduling, storage/release protocols and agent assignments to project guidance; load technical references only for the requested work.
 
 ## Installation For Local Use
 
@@ -120,17 +118,17 @@ Run local validation from the repository root:
 
 ```powershell
 python tests\validate_release.py
+# Documentation-only change:
+python tests\validate_release.py --scope docs
+# Helper change (includes helper tests once):
+python tests\validate_release.py --scope helpers
 ```
 
-The validator uses only the Python standard library. It compiles helper scripts, checks template parameter examples, verifies
-the safety/reference contract surface and project independence, runs conservative static checks on expected-output `.mx3`
-files, and runs `mumax3 -vet` when mumax3 is available on `PATH`.
+The validator uses only the Python standard library. The default full scope checks metadata/links, maintained-file privacy terms, helper behavior, templates, static warnings and available engine vet. Missing engine checks are reported as skipped, not passed. Documentation scopes do not run simulations or helper suites. Exact prose and project-name blacklists are not test contracts.
 
 ## Current Status
 
-The latest tagged metadata release is `v0.1.1`. The working tree after that release adds project-context discovery,
-intent-routed safety contracts, output/lineage/retention guidance, safer local synchronization, and expanded release checks
-while keeping the published skill project-agnostic.
+The latest tagged metadata release is `v0.1.1`. The second-round working tree reduces default instructions and delegates project governance to local guidance while preserving MuMax3 references, helpers and backed-up synchronization.
 
 These contracts are generic guidance and a validation surface. A research repository must implement and test the applicable
 state, lock, decision, output, and retention behavior locally; this skill update does not claim to migrate project task code
@@ -138,8 +136,7 @@ or project data.
 
 The examples and static checks are intended for skill validation and script hygiene. They do not prove physical correctness, numerical convergence, or publication readiness.
 
-When a repository provides `docs/mumax3_reference/current_project_context.md`, the skill treats that project-local file and
-the active source scripts it links as authoritative over generic examples.
+Start with the relevant project instructions and active task source; do not require a particular project-context filename or read unrelated history in full.
 
 ## Citation
 

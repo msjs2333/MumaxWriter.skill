@@ -1,62 +1,32 @@
 # Project Discovery
 
-Use this reference before changing an existing mumax3 repository.
+Use this reference when changing or extending an existing mumax3 project.
 
-## Start From The Requested Intent
+## Read The Smallest Relevant Context
 
-Choose the smallest authoritative context that can answer the request without weakening scientific gates.
+Start with the user's request, the affected `.mx3` source or template, and the task documentation that defines its active
+parameters. Add only the records needed for the decision:
 
-| Intent | Read first | Do not load by default |
-|---|---|---|
-| Status, ETA, monitor, cancel | Current operation state, compact handoff, declared log tail | API catalog, geometry history, OVF files, complete timelines |
-| Plot, GIF, summary | Exact input/product manifest and selected analysis/plot profile | Full simulation API or unrelated project history |
-| Physics or protocol change | Complete active project context, active template/source, API references | Historical defaults that are not active inputs |
-| Checkpoint reuse or scan | Parent manifest/SHA256, initial-state role, allowed protocol, output profile | Absolute path or mtime as identity |
-| Descendant preparation/classification | Decision contract, fresh gate summaries, complete ancestor chain | Final-frame-only or single-component substitutes |
+- status or a plot: the declared status, manifest, and relevant analysis or plot profile;
+- a physics, protocol, or mesh change: the active source, parameter provenance, and applicable API reference;
+- checkpoint reuse: the input identity plus its physical role, preparation protocol, material/geometry compatibility, and
+  permitted downstream protocol;
+- a scientific conclusion or child case: the evidence and decision criteria relevant to that conclusion.
 
-If the narrow context is missing, corrupt, stale, or internally inconsistent, stop and expand deliberately. Do not silently
-replace missing evidence with generic examples.
+Preserve unrelated work. Repository-local task instructions and current source override bundled examples.
 
-## Discovery Order
+## Resolve Conflicts Deliberately
 
-1. Inspect the repository status and preserve unrelated or uncommitted work.
-2. Read the existing `.mx3` scripts and templates that implement the requested behavior.
-3. Read the root README, task-specific documentation, result summaries, and test guidance.
-4. If `docs/mumax3_reference/current_project_context.md` exists, read it completely.
-5. Confirm parameter values against source code, generated manifests, and current result records rather than relying on old examples.
+Historical scripts and planning notes can explain a project, but are not automatically current inputs or evidence that a run
+completed. When sources disagree, prefer the active task source and its case record, check the result summary where needed,
+and report an unresolved conflict before changing physical behavior.
 
-Steps 2-5 are required before changing physics, protocols, checkpoints, or analysis definitions. Pure read-only status and
-product-layout work may follow the intent table instead, provided it does not make a scientific decision.
+Do not infer a material model, mesh, field, initial state, or analysis convention from an older case merely because it is
+nearby. Keep enough provenance to distinguish a byte-identical reused state from one that is also physically suitable for
+the new protocol.
 
-Bundled templates are generic examples. They never override a repository's current model.
+## Keep Project Context Project-Local
 
-## Historical And Current Models
-
-Projects often retain an early baseline alongside newer production geometries. Keep both traceable, but label them explicitly.
-Do not promote a historical mesh, material value, field, source position, or frequency to a current default merely because it
-appears in an older script or document.
-
-When sources disagree:
-
-1. Prefer the active task source and rendered case manifest.
-2. Use current result summaries to verify what actually ran.
-3. Treat planning documents as intent, not evidence of completed dynamics.
-4. Report unresolved conflicts before changing physical behavior.
-
-## Project Context Contract
-
-A project-local context should remain concise and contain:
-
-- current and historical model boundaries;
-- authoritative source and documentation links;
-- active, completed, and archived task status;
-- checkpoint identity and hash requirements;
-- project-specific analysis and human-review constraints;
-- facts that must not be inferred across different material or topology models.
-
-Prefer a compact active summary that links to historical records. Routine monitors should consume a small, schema-versioned
-handoff rather than this complete context. Plot-only work should consume exact manifests and profiles rather than discover
-inputs by scanning large output trees.
-
-Keep literature reviews and large result tables in their original project documents and link to them rather than duplicating
-them into the skill.
+A project may maintain a short navigation document linking its active tasks, sources, results, and historical records. It
+should help an agent find the relevant material, not require every request to load the entire project history. Keep detailed
+storage, execution, and retention procedures with the project that uses them.

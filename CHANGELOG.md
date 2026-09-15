@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+### Second-round simplification (2026-09-15)
+
+- Shortened the entry point and four workflow/output references; read task-specific context instead of a mandatory full project history.
+- Kept writer coordination, SHA256 traceability, sufficient vector evidence and human/automatic separation as concise, scoped principles. Removed mandatory project state schemas, ancestor pipelines and cold-storage/release procedures from generic guidance.
+- Kept API references, templates and runtime helpers compatible; directory layouts and metadata are examples, not a required framework.
+- Replaced wording/project-name assertions with scoped metadata/link and existing helper behavior checks; added docs/helpers/full validation scopes, retaining a full default and explicit engine-skip reporting.
+
+The earlier entries below describe the first-round development history; the second-round notes supersede its mandatory workflow/wording surface.
+
 ### Added
 
 - Added repository-local project-context discovery without embedding private or fast-changing model defaults in the generic skill.

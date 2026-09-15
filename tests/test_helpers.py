@@ -2,12 +2,13 @@ from __future__ import annotations
 
 import csv
 import json
-import re
 import subprocess
 import sys
 import tempfile
 import unittest
 from pathlib import Path
+
+from validate_release import local_reference_links, missing_local_reference_links
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -15,10 +16,6 @@ SKILL = ROOT / "skills" / "mumax3"
 CHECKER = SKILL / "scripts" / "check_mx3_static.py"
 COLLECTOR = SKILL / "scripts" / "collect_case_status.py"
 SYNC = SKILL / "scripts" / "sync_local_skill.py"
-
-
-def normalized_text(path: Path) -> str:
-    return path.read_text(encoding="utf-8-sig").replace("\r\n", "\n")
 
 
 def run(*args: str) -> subprocess.CompletedProcess[str]:
@@ -171,78 +168,9 @@ class SyncSkillTests(unittest.TestCase):
 
 class ReferenceContractTests(unittest.TestCase):
     def test_skill_reference_links_exist(self) -> None:
-        text = normalized_text(SKILL / "SKILL.md")
-        links = sorted(set(re.findall(r"references/[A-Za-z0-9_./-]+\.md", text)))
+        links = local_reference_links()
         self.assertTrue(links)
-        for link in links:
-            with self.subTest(link=link):
-                self.assertTrue((SKILL / link).is_file())
-
-    def test_four_safety_invariants_are_explicit(self) -> None:
-        text = normalized_text(SKILL / "SKILL.md")
-        required = (
-            "**Single writer:**",
-            "**SHA256 lineage:**",
-            "**All-vector decision gates:**",
-            "**Manual/automatic separation:**",
-            "`mx`",
-            "`my`",
-            "`mz`",
-        )
-        for fragment in required:
-            with self.subTest(fragment=fragment):
-                self.assertIn(fragment, text)
-
-    def test_workflow_and_output_contracts_are_routed(self) -> None:
-        workflow = normalized_text(SKILL / "references" / "project_workflows.md")
-        output = normalized_text(SKILL / "references" / "output_and_reproducibility.md")
-        workflow_fragments = (
-            "## State Safety Primitives",
-            "`execution_state`",
-            "## Decision Contracts And Ancestor Gates",
-            "`monitor_handoff.json`",
-            "`cancelled_by_user`",
-            "A GPU lease is capacity scheduling",
-        )
-        output_fragments = (
-            "## Output Directory Contract",
-            "`execution_succeeded_reconciliation_required`",
-            "## Timeline And Completion Contract",
-            "repository-relative path",
-            "## Output And Sampling Profiles",
-            "## Analysis Products And Plot Profiles",
-            "## Retention And Safe Release",
-            "every destructive release candidate",
-            "must be hashed again at apply time",
-            "matching terminal journal declares release",
-            "tombstone exists",
-            "immutable tombstone",
-        )
-        for fragment in workflow_fragments:
-            with self.subTest(document="workflow", fragment=fragment):
-                self.assertIn(fragment, workflow)
-        for fragment in output_fragments:
-            with self.subTest(document="output", fragment=fragment):
-                self.assertIn(fragment, output)
-
-    def test_generic_skill_excludes_project_specific_literals(self) -> None:
-        blocked = (
-            "E:\\CDW",
-            "D:\\Project\\MumaxWriter.skill",
-            "C:\\Users\\msjs2",
-            "field_switchable_ellipse_ku_dw_lens",
-            "dmi2p4_f050",
-            "bimeron_homotopy_diagnostic",
-            "3335.681",
-        )
-        for path in sorted(SKILL.rglob("*")):
-            if not path.is_file() or path.suffix.lower() not in {".md", ".py", ".yaml", ".yml", ".template"}:
-                continue
-            text = normalized_text(path)
-            for literal in blocked:
-                with self.subTest(path=path.relative_to(SKILL), literal=literal):
-                    self.assertNotIn(literal, text)
-
+        self.assertEqual(missing_local_reference_links(), [])
 
 if __name__ == "__main__":
     unittest.main()

@@ -62,8 +62,8 @@ MumaxWriter.skill/
 - mesh、geometry、material、initial state、field、output、run stage を整理する。
 - パラメータスイープ、フィッティング、可視化、出力整理には Python orchestration を使う方針を示す。
 - status/monitor や product-only plotting では、無関係な API、geometry history、大容量 field data を読まずに最小 context を選ぶ。
-- mutable resource ごとの single writer、SHA256 lineage、全 frame・全 vector の decision gate、人間による科学分類の分離を維持する。
-- background handoff/cancel、output reconciliation、profile、product manifest、安全な retention の汎用 contract を示す。
+- single writer、SHA256 traceability、目的に応じた vector evidence、人間と自動判定の分離を短い原則として維持する。
+- task schema、background scheduling、storage/release、agent 分担は project guidance に委ね、reference は必要時に読む。
 
 ## Local Installation
 
@@ -91,17 +91,15 @@ Repository root で local validation を実行します。
 
 ```powershell
 python tests\validate_release.py
+python tests\validate_release.py --scope docs
+python tests\validate_release.py --scope helpers
 ```
 
-この validator は Python standard library のみを使います。helper script の compile、template parameter example、
-safety/reference contract と project independence、expected-output `.mx3` の static check、利用可能な場合の
-`mumax3 -vet` を検証します。
+validator は Python standard library のみを使用します。既定の full は metadata/link、維持対象ファイルの機密項目、helper、template、static check、利用可能な vet を確認します。未実行の vet は skip と表示し、文書の固定文言や project 名 blacklist は検証対象にしません。docs は helper suite を実行しません。
 
 ## Current Status
 
-最新のタグ付きメタデータ release は `v0.1.1` です。その後の作業ツリーでは、project context discovery、
-intent-routed safety contract、output/lineage/retention guidance、安全なローカル同期、release check が追加されています。
-公開 skill は特定の研究プロジェクトに依存しません。
+最新のタグ付き metadata release は `v0.1.1` です。第二回改訂では既定の指示を短縮し、project governance をローカル guidance に分離します。MuMax3 reference、helper、backup 付き同期は維持します。
 
 これらは汎用 guidance と validation surface です。各 research repository は state、lock、scientific decision、
 output、retention の必要な実装と test をローカルに持つ必要があり、この skill 更新だけで project task code や

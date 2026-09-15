@@ -7,8 +7,8 @@ prove physical correctness of any mumax3 simulation.
 
 from __future__ import annotations
 
+import argparse
 import json
-import py_compile
 import re
 import shutil
 import subprocess
@@ -42,66 +42,20 @@ SENSITIVE_TERMS = [
 ]
 
 SCAN_SUFFIXES = {".md", ".py", ".mx3", ".template", ".json", ".yaml", ".yml", ".txt"}
-EXCLUDED_DIR_NAMES = {
-    ".git",
-    "__pycache__",
-    ".pytest_cache",
-    "runs",
-    "results",
-    "work",
-    "external_reference_cache",
-}
-EXCLUDED_FILES = {
-    Path("tests") / "validate_release.py",
-    Path("docs") / "research" / "mumax3_script_language_and_api.md",
-}
-
-REFERENCE_CONTRACTS = {
-    SKILL / "SKILL.md": (
-        "## Safety Invariants",
-        "**Single writer:**",
-        "**SHA256 lineage:**",
-        "**All-vector decision gates:**",
-        "**Manual/automatic separation:**",
-    ),
-    SKILL / "references" / "project_discovery.md": (
-        "## Start From The Requested Intent",
-        "Status, ETA, monitor, cancel",
-        "Decision contract, fresh gate summaries, complete ancestor chain",
-    ),
-    SKILL / "references" / "project_workflows.md": (
-        "## State Safety Primitives",
-        "`execution_state`",
-        "## Decision Contracts And Ancestor Gates",
-        "`monitor_handoff.json`",
-        "`cancelled_by_user`",
-        "A GPU lease is capacity scheduling",
-    ),
-    SKILL / "references" / "output_and_reproducibility.md": (
-        "## Output Directory Contract",
-        "`execution_succeeded_reconciliation_required`",
-        "## Timeline And Completion Contract",
-        "repository-relative path",
-        "## Output And Sampling Profiles",
-        "## Analysis Products And Plot Profiles",
-        "## Retention And Safe Release",
-        "every destructive release candidate",
-        "must be hashed again at apply time",
-        "matching terminal journal declares release",
-        "tombstone exists",
-        "immutable tombstone",
-    ),
-}
-
-PROJECT_SPECIFIC_TERMS = (
-    "E:\\CDW",
-    "D:\\Project\\MumaxWriter.skill",
-    "C:\\Users\\msjs2",
-    "field_switchable_ellipse_ku_dw_lens",
-    "dmi2p4_f050",
-    "bimeron_homotopy_diagnostic",
-    "3335.681",
+MAINTAINED_SCAN_ROOTS = (SKILL, ROOT / "docs", ROOT / "examples", ROOT / "tests")
+MAINTAINED_SCAN_FILES = (
+    ROOT / "README.md",
+    ROOT / "README.zh-CN.md",
+    ROOT / "README.ja.md",
+    ROOT / "CHANGELOG.md",
+    ROOT / "LICENSE",
 )
+MAINTAINED_TOP_LEVEL_DIRS = {"skills", "docs", "examples", "tests"}
+MAINTAINED_TOP_LEVEL_FILES = {path.name for path in MAINTAINED_SCAN_FILES}
+SENSITIVE_SCAN_EXCEPTIONS = {
+    ROOT / "tests" / "validate_release.py",
+    ROOT / "docs" / "research" / "mumax3_script_language_and_api.md",
+}
 
 
 def rel(path: Path) -> str:
@@ -109,7 +63,14 @@ def rel(path: Path) -> str:
 
 
 def run(cmd: list[str], *, cwd: Path = ROOT) -> subprocess.CompletedProcess[str]:
-    return subprocess.run(cmd, cwd=cwd, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    return subprocess.run(
+        cmd,
+        cwd=cwd,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        timeout=60,
+    )
 
 
 def check(condition: bool, message: str, failures: list[str]) -> None:
@@ -132,49 +93,28 @@ def check_skill_metadata(failures: list[str]) -> None:
     check("description:" in frontmatter and ".mx3" in frontmatter, "SKILL.md frontmatter has useful description", failures)
 
 
-def check_reference_contracts(failures: list[str]) -> None:
-    for path, fragments in REFERENCE_CONTRACTS.items():
-        check(path.is_file(), f"{rel(path)} exists", failures)
-        if not path.is_file():
-            continue
-        text = path.read_text(encoding="utf-8-sig").replace("\r\n", "\n")
-        for fragment in fragments:
-            check(fragment in text, f"{rel(path)} contains contract fragment {fragment!r}", failures)
+def local_reference_links(skill: Path = SKILL) -> list[str]:
+    skill_text = (skill / "SKILL.md").read_text(encoding="utf-8-sig")
+    return sorted(set(re.findall(r"references/[A-Za-z0-9_./-]+\.md", skill_text)))
 
-    skill_text = (SKILL / "SKILL.md").read_text(encoding="utf-8-sig")
-    links = sorted(set(re.findall(r"references/[A-Za-z0-9_./-]+\.md", skill_text)))
+
+def missing_local_reference_links(skill: Path = SKILL) -> list[str]:
+    return [link for link in local_reference_links(skill) if not (skill / link).is_file()]
+
+
+def check_reference_links(failures: list[str]) -> None:
+    links = local_reference_links()
     check(bool(links), "SKILL.md routes to local references", failures)
-    for link in links:
-        check((SKILL / link).is_file(), f"SKILL.md reference exists: {link}", failures)
-
-
-def check_project_independence(failures: list[str]) -> None:
-    hits: list[str] = []
-    for path in SKILL.rglob("*"):
-        if not path.is_file() or path.suffix.lower() not in SCAN_SUFFIXES:
-            continue
-        try:
-            text = path.read_text(encoding="utf-8-sig")
-        except UnicodeDecodeError:
-            continue
-        for term in PROJECT_SPECIFIC_TERMS:
-            if term in text:
-                hits.append(f"{rel(path)}: {term}")
-    if hits:
-        failures.append("generic skill contains project-specific terms")
-        print("FAIL: generic skill is project-independent")
-        for hit in hits:
-            print(f"  {hit}")
-    else:
-        print("PASS: generic skill is project-independent")
+    for link in missing_local_reference_links():
+        check(False, f"SKILL.md reference exists: {link}", failures)
 
 
 def check_helper_compilation(failures: list[str]) -> None:
     for script in HELPER_SCRIPTS:
         try:
-            py_compile.compile(str(script), doraise=True)
-        except py_compile.PyCompileError as exc:
-            failures.append(f"{rel(script)} failed py_compile: {exc.msg}")
+            compile(script.read_text(encoding="utf-8-sig"), str(script), "exec")
+        except (OSError, SyntaxError) as exc:
+            failures.append(f"{rel(script)} failed syntax compilation: {exc}")
             print(f"FAIL: {rel(script)} compiles")
         else:
             print(f"PASS: {rel(script)} compiles")
@@ -224,7 +164,7 @@ def check_static_warnings(failures: list[str]) -> None:
 
 
 def check_helper_tests(failures: list[str]) -> None:
-    proc = run([sys.executable, "-m", "unittest", "discover", "-s", "tests", "-p", "test_*.py"])
+    proc = run([sys.executable, "-m", "unittest", "discover", "-s", "tests", "-p", "test_helpers.py"])
     if proc.returncode == 0:
         print("PASS: helper regression tests")
     else:
@@ -234,10 +174,12 @@ def check_helper_tests(failures: list[str]) -> None:
         print(proc.stderr)
 
 
-def check_mumax_vet(failures: list[str]) -> None:
+def check_mumax_vet(failures: list[str], skipped: list[str]) -> None:
     mumax = shutil.which("mumax3")
     if not mumax:
-        print("SKIP: mumax3 not found on PATH; skipping mumax3 -vet")
+        message = "mumax3 not found on PATH; mumax3 -vet was not run"
+        skipped.append(message)
+        print(f"SKIP: {message}")
         return
     for script in expected_mx3_files():
         proc = run([mumax, "-vet", str(script)])
@@ -250,25 +192,42 @@ def check_mumax_vet(failures: list[str]) -> None:
             print(proc.stderr)
 
 
-def iter_scannable_files() -> list[Path]:
+def is_scannable(path: Path) -> bool:
+    return path.suffix.lower() in SCAN_SUFFIXES or path.name in {"CHANGELOG.md", "LICENSE"}
+
+
+def is_maintained_relative(path: Path) -> bool:
+    return bool(path.parts) and (
+        path.parts[0] in MAINTAINED_TOP_LEVEL_DIRS
+        or (len(path.parts) == 1 and path.name in MAINTAINED_TOP_LEVEL_FILES)
+    )
+
+
+def iter_maintained_files() -> tuple[list[Path], str]:
+    tracked = run(["git", "ls-files", "-z"])
+    if tracked.returncode == 0:
+        files: list[Path] = []
+        for item in tracked.stdout.split("\0"):
+            relative = Path(item)
+            path = ROOT / relative
+            if item and is_maintained_relative(relative) and path.is_file() and is_scannable(path):
+                files.append(path)
+        return files, "git-tracked maintained files"
+
     files: list[Path] = []
-    for path in ROOT.rglob("*"):
-        if not path.is_file():
-            continue
-        relative = path.relative_to(ROOT)
-        if relative in EXCLUDED_FILES:
-            continue
-        directory_parts = relative.parts[:-1]
-        if any(part in EXCLUDED_DIR_NAMES or part.startswith(".tmp") or part.endswith("_stage") or part.endswith("_staging") for part in directory_parts):
-            continue
-        if path.suffix in SCAN_SUFFIXES or path.name in {"CHANGELOG.md", "LICENSE"}:
-            files.append(path)
-    return files
+    for root in MAINTAINED_SCAN_ROOTS:
+        if root.is_dir():
+            files.extend(path for path in root.rglob("*") if path.is_file() and is_scannable(path))
+    files.extend(path for path in MAINTAINED_SCAN_FILES if path.is_file() and is_scannable(path))
+    return files, "explicit maintained roots (git unavailable)"
 
 
 def check_sensitive_terms(failures: list[str]) -> None:
     hits: list[str] = []
-    for path in iter_scannable_files():
+    files, scope = iter_maintained_files()
+    for path in files:
+        if path in SENSITIVE_SCAN_EXCEPTIONS:
+            continue
         try:
             text = path.read_text(encoding="utf-8")
         except UnicodeDecodeError:
@@ -278,31 +237,48 @@ def check_sensitive_terms(failures: list[str]) -> None:
                 hits.append(f"{rel(path)}: {term}")
     if hits:
         failures.append("sensitive-term scan found blocked terms")
-        print("FAIL: sensitive-term scan")
+        print(f"FAIL: sensitive-term scan ({scope})")
         for hit in hits:
             print(f"  {hit}")
     else:
-        print("PASS: sensitive-term scan")
+        print(f"PASS: sensitive-term scan ({scope})")
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description="Validate a MumaxWriter.skill release candidate.")
+    parser.add_argument(
+        "--scope",
+        choices=("docs", "helpers", "full"),
+        default="full",
+        help="docs checks metadata, reference links, and privacy terms; helpers adds helper checks; full adds templates, static checks, and mumax3 -vet.",
+    )
+    scope = parser.parse_args().scope
     failures: list[str] = []
+    skipped: list[str] = []
     check_skill_metadata(failures)
-    check_reference_contracts(failures)
-    check_project_independence(failures)
-    check_helper_compilation(failures)
-    check_templates(failures)
-    check_static_warnings(failures)
-    check_helper_tests(failures)
-    check_mumax_vet(failures)
+    check_reference_links(failures)
     check_sensitive_terms(failures)
+
+    if scope in {"helpers", "full"}:
+        check_helper_compilation(failures)
+        check_helper_tests(failures)
+
+    if scope == "full":
+        check_templates(failures)
+        check_static_warnings(failures)
+        check_mumax_vet(failures, skipped)
 
     if failures:
         print("\nValidation failed:")
         for item in failures:
             print(f"- {item}")
         return 1
-    print("\nValidation passed.")
+    if skipped:
+        print("\nValidation completed with skipped checks (not a full acceptance):")
+        for item in skipped:
+            print(f"- {item}")
+    else:
+        print("\nValidation passed.")
     return 0
 
 

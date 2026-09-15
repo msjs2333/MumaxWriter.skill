@@ -62,8 +62,8 @@ MumaxWriter.skill/
 - 按 mesh、geometry、material、initial state、field、output、run stage 组织脚本。
 - 在参数扫描、拟合、绘图和结果整理场景中建议使用 Python 包装 mumax3。
 - 让纯 status/monitor 和产品级绘图按最小上下文执行，不默认加载无关 API、几何历史或大体积场数据。
-- 显式保留同一可变资源单 writer、SHA256 谱系、完整窗口全矢量门禁，以及独立的人工科学分类层。
-- 提供后台 handoff/取消、输出收口、profile、产品 manifest 和安全留存的通用合同，不嵌入具体项目阈值或路径。
+- 简短保留单 writer、SHA256 追溯、按问题需要的充分矢量证据，以及人工/自动结论分离原则。
+- 项目字段、后台调度、备份/释放协议和代理分工交由项目指导；通用参考按请求加载，不强制每个任务采用同一框架。
 
 ## 本地安装
 
@@ -116,22 +116,24 @@ Use $mumax3 to write a minimal mumax3 thin-film relaxation script with SI units,
 
 ```powershell
 python tests\validate_release.py
+# 仅文档改动
+python tests\validate_release.py --scope docs
+# helper 改动（内部只跑一次 helper 测试）
+python tests\validate_release.py --scope helpers
 ```
 
-该验证脚本只使用 Python 标准库。它会编译 helper 脚本、检查模板参数示例、验证安全/reference 合同与项目独立性、
-对 expected-output `.mx3` 做保守静态检查，并在本地 `PATH` 中存在 mumax3 时运行 `mumax3 -vet`。
+验证脚本只用 Python 标准库。默认 full 检查元数据/链接、维护文件敏感项、helper 行为、模板、静态告警及可用的引擎 vet；缺失检查明确记为 skip，不冒充通过。docs 范围不运行 helper 套件，不再锁定精确文案或项目禁词。
 
 ## 当前状态
 
-最近的标签与元数据版本为 `v0.1.1`。此后的工作树增加了项目上下文发现、按意图路由的安全合同、输出/谱系/留存
-指南、安全本地同步和更完整的发布检查，同时继续保持公开 skill 与具体研究项目解耦。
+最近的标签与元数据版本为 `v0.1.1`。第二轮工作树精简默认指令，将项目治理交给项目指导，保留 MuMax3 参考、助手与带备份同步。
 
 这些内容是通用指南和验证接口。具体研究仓库仍须在本地实现并测试适用的状态、锁、科学决策、输出和留存行为；
 本次通用 skill 更新不表示任何项目任务代码或项目数据已经迁移。
 
 示例和静态检查只用于 skill 验证和脚本卫生检查，不证明物理正确性、数值收敛或论文级可用性。
 
-如果项目提供 `docs/mumax3_reference/current_project_context.md`，skill 会把该项目内文件及其链接的活动源码视为高于通用示例的权威依据。
+从相关项目指导和活动任务源码开始，不要求特定上下文文件名，也不默认全读无关历史。
 
 ## 引用
 
