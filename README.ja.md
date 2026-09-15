@@ -97,7 +97,7 @@ validator は Python standard library のみを使用します。既定の full 
 
 ## Current Status
 
-最新のタグ付き metadata release は `v0.1.1` です。第二回改訂では既定の指示を短縮し、project governance をローカル guidance に分離します。MuMax3 reference、helper、backup 付き同期は維持します。
+最新のタグ付き metadata release は `v0.1.1` です。第三回改訂では汎用スキルと project governance をさらに分離し、重複する reference 2 件を削除して、任意の status helper の metadata 判定を修正しました。template と backup 付き同期は互換性を維持します。
 
 これらは汎用 guidance と validation surface です。各 research repository は state、lock、scientific decision、
 output、retention の必要な実装と test をローカルに持つ必要があり、この skill 更新だけで project task code や
