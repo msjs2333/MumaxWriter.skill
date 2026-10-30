@@ -39,6 +39,7 @@ MumaxWriter.skill/
         parameter_sweep.md
         output_and_reproducibility.md
         compatibility_notes.md
+        installation.md
       scripts/
         check_mx3_static.py
         render_template.py
@@ -46,6 +47,7 @@ MumaxWriter.skill/
         sync_local_skill.py
   docs/
     release_notes_v0.1.0.md
+    release_notes_v0.2.0.md
     third_party_sources.md
     troubleshooting.md
   tests/
@@ -100,6 +102,8 @@ npx codex-marketplace add msjs2333/MumaxWriter.skill/skills/mumax3 --skill
 Use $mumax3 to write or review this mumax3 script.
 ```
 
+MuMax3 模拟器需要单独安装。请按需阅读简短的[安装指南](skills/mumax3/references/installation.md)，其中说明环境检查、官方预编译包、WSL/源码编译路线和 Agent 辅助安装。
+
 ## 快速示例
 
 ```text
@@ -124,7 +128,7 @@ python tests\validate_release.py --scope helpers
 
 ## 当前状态
 
-最近的标签与元数据版本为 `v0.1.1`。第三轮进一步分离通用技能与项目治理，删除两份重复工作流参考并修复可选状态助手的元数据判断；模板与带备份同步保持兼容。
+当前版本为 `v0.2.0`，包含 v0.1.1 以来的通用工作流与可选助手改进，并新增独立的 MuMax3 安装指南。skill 安装路径、模板和带备份同步保持兼容。
 
 这些内容是通用指南和验证接口。具体研究仓库仍须在本地实现并测试适用的状态、锁、科学决策、输出和留存行为；
 本次通用 skill 更新不表示任何项目任务代码或项目数据已经迁移。
@@ -132,12 +136,6 @@ python tests\validate_release.py --scope helpers
 示例和静态检查只用于 skill 验证和脚本卫生检查，不证明物理正确性、数值收敛或论文级可用性。
 
 从相关项目指导和活动任务源码开始，不要求特定上下文文件名，也不默认全读无关历史。
-
-## 引用
-
-如果你在科研、教学或公开工作流中使用这个 skill，请使用 [`CITATION.cff`](CITATION.cff) 中的元数据引用本仓库。GitHub 应会通过仓库页面的 “Cite this repository” 按钮显示这些引用信息。
-
-本项目已为 Zenodo 软件归档做好准备。Zenodo 为 `v0.1.1` release 分配 DOI 后，再把 DOI badge 和 DOI 链接补充到本节。
 
 ## 未来规划
 
@@ -150,7 +148,7 @@ python tests\validate_release.py --scope helpers
 
 ## 参考文档
 
-- [v0.1.1 发布说明](docs/release_notes_v0.1.1.md)
+- [v0.2.0 发布说明](docs/release_notes_v0.2.0.md)
 - [v0.1.0 发布说明](docs/release_notes_v0.1.0.md)
 - [示例 catalog](examples/catalog/README.md)
 - [第三方来源说明](docs/third_party_sources.md)

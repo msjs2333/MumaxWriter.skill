@@ -39,6 +39,7 @@ MumaxWriter.skill/
         parameter_sweep.md
         output_and_reproducibility.md
         compatibility_notes.md
+        installation.md
       scripts/
         check_mx3_static.py
         render_template.py
@@ -46,6 +47,7 @@ MumaxWriter.skill/
         sync_local_skill.py
   docs/
     release_notes_v0.1.0.md
+    release_notes_v0.2.0.md
     third_party_sources.md
     troubleshooting.md
   tests/
@@ -77,6 +79,8 @@ Copy-Item -Recurse .\skills\mumax3 C:\Users\<you>\.codex\skills\mumax3
 Use $mumax3 to write or review this mumax3 script.
 ```
 
+MuMax3 本体は skill とは別にインストールします。環境確認、公式バイナリ、WSL・ソースビルド、Agent によるセットアップは短い[インストールガイド](skills/mumax3/references/installation.md)を参照してください。
+
 ## Quick Example
 
 ```text
@@ -97,19 +101,13 @@ validator は Python standard library のみを使用します。既定の full 
 
 ## Current Status
 
-最新のタグ付き metadata release は `v0.1.1` です。第三回改訂では汎用スキルと project governance をさらに分離し、重複する reference 2 件を削除して、任意の status helper の metadata 判定を修正しました。template と backup 付き同期は互換性を維持します。
+現在のリリースは `v0.2.0` です。v0.1.1 以降の汎用ワークフローと任意の helper の改善に加え、独立した MuMax3 インストールガイドを含みます。skill のインストール先、template、backup 付き同期は互換性を維持します。
 
 これらは汎用 guidance と validation surface です。各 research repository は state、lock、scientific decision、
 output、retention の必要な実装と test をローカルに持つ必要があり、この skill 更新だけで project task code や
 project data が移行済みになったとはみなしません。
 
 Examples and static checks are for skill validation and script hygiene. They do not prove physical correctness, numerical convergence, or publication readiness.
-
-## Citation
-
-If you use this skill in research, teaching, or published workflows, please cite the repository using the metadata in [`CITATION.cff`](CITATION.cff). GitHub should show this metadata through the repository's "Cite this repository" button.
-
-This project is prepared for Zenodo software archiving. After Zenodo assigns a DOI for the `v0.1.1` release, add the DOI badge and DOI link to this section.
 
 ## Future Roadmap
 
@@ -122,7 +120,7 @@ Planned directions for later releases:
 
 ## References
 
-- [Release notes v0.1.1](docs/release_notes_v0.1.1.md)
+- [Release notes v0.2.0](docs/release_notes_v0.2.0.md)
 - [Release notes v0.1.0](docs/release_notes_v0.1.0.md)
 - [Example catalog](examples/catalog/README.md)
 - [Third-party sources](docs/third_party_sources.md)

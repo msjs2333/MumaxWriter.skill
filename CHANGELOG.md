@@ -1,6 +1,13 @@
 # Changelog
 
-## Unreleased
+## 0.2.0 - 2026-10-30
+
+### Installation and documentation
+
+- Added a separate MuMax3 installation reference covering environment checks, official binaries, WSL 2, source builds and authorized agent assistance; the main skill links to it only when needed.
+- Removed repository citation metadata and software-archiving preparation from the current documentation.
+- Updated the English, Chinese and Japanese READMEs.
+- Included the previously unreleased skill and helper improvements below.
 
 ### Third-round generalization (2026-09-15)
 
@@ -41,20 +48,6 @@ The earlier entries below describe the first-round development history; the seco
 - Made static mesh/output checks case-insensitive and limited protected-name warnings to core mumax3 quantities and constants.
 - Extended case-status collection with manifest, provenance, analysis-freshness, and manual-review fields.
 - Expanded helper regression coverage from implementation helpers to the generic workflow and reproducibility contract surface.
-
-## 0.1.1 - 2026-05-15
-
-Citation and release metadata update for the generic `mumax3` Codex skill.
-
-### Added
-
-- Added repository-level `CITATION.cff` metadata for GitHub citation support and Zenodo-ready software archiving.
-- Added README citation guidance in English, Chinese, and Japanese.
-- Added release notes for the citation-only `v0.1.1` metadata release.
-
-### Changed
-
-- Documented that DOI badge and DOI links should be added after Zenodo generates the software DOI.
 
 ## 0.1.0 - 2026-05-12
 

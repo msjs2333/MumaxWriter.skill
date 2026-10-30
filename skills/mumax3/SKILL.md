@@ -19,6 +19,7 @@ Read the target script and relevant task instructions. Use current source and in
 - **Model-specific help:** choose [structures.md](references/structures.md) or [examples.md](references/examples.md).
 - **Output or sampling design:** use [output_and_reproducibility.md](references/output_and_reproducibility.md).
 - **Parameter scans:** use [parameter_sweep.md](references/parameter_sweep.md) to choose native sequential sweeps or external case orchestration.
+- **Installation or missing engine/GPU:** use [installation.md](references/installation.md) for environment checks and an authorized MuMax3 setup; skip it for ordinary script work.
 
 ## Scientific and execution principles
 

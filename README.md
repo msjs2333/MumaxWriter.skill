@@ -39,6 +39,7 @@ MumaxWriter.skill/
         parameter_sweep.md
         output_and_reproducibility.md
         compatibility_notes.md
+        installation.md
       scripts/
         check_mx3_static.py
         render_template.py
@@ -46,6 +47,7 @@ MumaxWriter.skill/
         sync_local_skill.py
   docs/
     release_notes_v0.1.0.md
+    release_notes_v0.2.0.md
     third_party_sources.md
     troubleshooting.md
   tests/
@@ -101,6 +103,8 @@ Then invoke it explicitly with:
 Use $mumax3 to write or review this mumax3 script.
 ```
 
+MuMax3 simulator setup is separate from skill installation. See the short [installation guide](skills/mumax3/references/installation.md) for environment checks, official binaries, WSL/source-build options, and agent-assisted setup.
+
 ## Quick Example
 
 ```text
@@ -125,7 +129,7 @@ The validator uses only the Python standard library. The default full scope chec
 
 ## Current Status
 
-The latest tagged metadata release is `v0.1.1`. Third-round changes further separate MuMax3 capabilities from project governance, remove two redundant workflow references and correct optional collector metadata handling. Templates and backed-up synchronization remain compatible.
+The current release is `v0.2.0`. It includes the generic workflow and optional helper improvements since v0.1.1, plus a separate MuMax3 installation guide. The installed skill path, templates and backed-up synchronization remain compatible.
 
 These contracts are generic guidance and a validation surface. A research repository must implement and test the applicable
 state, lock, decision, output, and retention behavior locally; this skill update does not claim to migrate project task code
@@ -134,12 +138,6 @@ or project data.
 The examples and static checks are intended for skill validation and script hygiene. They do not prove physical correctness, numerical convergence, or publication readiness.
 
 Start with the relevant project instructions and active task source; do not require a particular project-context filename or read unrelated history in full.
-
-## Citation
-
-If you use this skill in research, teaching, or published workflows, please cite the repository using the metadata in [`CITATION.cff`](CITATION.cff). GitHub should show this metadata through the repository's "Cite this repository" button.
-
-This project is prepared for Zenodo software archiving. After Zenodo assigns a DOI for the `v0.1.1` release, add the DOI badge and DOI link to this section.
 
 ## Future Roadmap
 
@@ -152,7 +150,7 @@ Planned directions for later releases:
 
 ## Documentation
 
-- [Release notes v0.1.1](docs/release_notes_v0.1.1.md): citation metadata update and Zenodo archiving notes.
+- [Release notes v0.2.0](docs/release_notes_v0.2.0.md): MuMax3 setup guidance and skill maintenance updates.
 - [Release notes v0.1.0](docs/release_notes_v0.1.0.md): initial public snapshot scope, compatibility, validation status, and known limitations.
 - [Example catalog](examples/catalog/README.md): prompts, expected outputs, and coverage map.
 - [Third-party sources](docs/third_party_sources.md): external source and provenance notes.
