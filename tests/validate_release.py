@@ -24,6 +24,8 @@ HELPER_SCRIPTS = [
     SKILL / "scripts" / "render_template.py",
     SKILL / "scripts" / "collect_case_status.py",
     SKILL / "scripts" / "sync_local_skill.py",
+    SKILL / "scripts" / "analyze_tutorial.py",
+    ROOT / "examples" / "expected_outputs" / "parameterize_field_frequency_sweep" / "generate_field_frequency_sweep.py",
 ]
 
 TEMPLATE_PARAM_MAP = {
@@ -32,14 +34,8 @@ TEMPLATE_PARAM_MAP = {
     "local_ac_field.mx3.template": ROOT / "examples" / "template_params" / "local_ac_field.params.example.json",
 }
 
-SENSITIVE_TERMS = [
-    "ROG-ZG16-MSJS",
-    "CodexSandboxOffline",
-    "notes_CDW",
-    "SWlens",
-    "domain_wall_scripts_analysis",
-    "parameter_sweep_planning_tasklist",
-]
+# Detect accidentally embedded local home paths without retaining private names.
+PRIVATE_PATH = re.compile(r"(?i)(?:[a-z]:[\\/]Users[\\/]|/(?:home|Users)/)[^<>\s`\\/]+[\\/]")
 
 SCAN_SUFFIXES = {".md", ".py", ".mx3", ".template", ".json", ".yaml", ".yml", ".txt"}
 MAINTAINED_SCAN_ROOTS = (SKILL, ROOT / "docs", ROOT / "examples", ROOT / "tests")
@@ -52,10 +48,7 @@ MAINTAINED_SCAN_FILES = (
 )
 MAINTAINED_TOP_LEVEL_DIRS = {"skills", "docs", "examples", "tests"}
 MAINTAINED_TOP_LEVEL_FILES = {path.name for path in MAINTAINED_SCAN_FILES}
-SENSITIVE_SCAN_EXCEPTIONS = {
-    ROOT / "tests" / "validate_release.py",
-    ROOT / "docs" / "research" / "mumax3_script_language_and_api.md",
-}
+
 
 
 def rel(path: Path) -> str:
@@ -144,7 +137,8 @@ def check_templates(failures: list[str]) -> None:
 
 
 def expected_mx3_files() -> list[Path]:
-    return sorted((ROOT / "examples" / "expected_outputs").rglob("*.mx3"))
+    return sorted([*(ROOT / "examples" / "expected_outputs").rglob("*.mx3"),
+                   *(SKILL / "examples").rglob("*.mx3")])
 
 
 def check_static_warnings(failures: list[str]) -> None:
@@ -164,7 +158,7 @@ def check_static_warnings(failures: list[str]) -> None:
 
 
 def check_helper_tests(failures: list[str]) -> None:
-    proc = run([sys.executable, "-m", "unittest", "discover", "-s", "tests", "-p", "test_helpers.py"])
+    proc = run([sys.executable, "-m", "unittest", "discover", "-s", "tests", "-p", "test_*.py"])
     if proc.returncode == 0:
         print("PASS: helper regression tests")
     else:
@@ -226,22 +220,19 @@ def check_sensitive_terms(failures: list[str]) -> None:
     hits: list[str] = []
     files, scope = iter_maintained_files()
     for path in files:
-        if path in SENSITIVE_SCAN_EXCEPTIONS:
-            continue
         try:
             text = path.read_text(encoding="utf-8")
         except UnicodeDecodeError:
             continue
-        for term in SENSITIVE_TERMS:
-            if term in text:
-                hits.append(f"{rel(path)}: {term}")
+        if PRIVATE_PATH.search(text):
+            hits.append(f"{rel(path)}: literal local home path")
     if hits:
-        failures.append("sensitive-term scan found blocked terms")
-        print(f"FAIL: sensitive-term scan ({scope})")
+        failures.append("local-path scan found blocked terms")
+        print(f"FAIL: local-path scan ({scope})")
         for hit in hits:
             print(f"  {hit}")
     else:
-        print(f"PASS: sensitive-term scan ({scope})")
+        print(f"PASS: local-path scan ({scope})")
 
 
 def main() -> int:
@@ -250,7 +241,7 @@ def main() -> int:
         "--scope",
         choices=("docs", "helpers", "full"),
         default="full",
-        help="docs checks metadata, reference links, and privacy terms; helpers adds helper checks; full adds templates, static checks, and mumax3 -vet.",
+        help="docs checks metadata, reference links, and local home paths; helpers adds helper checks; full adds templates, static checks, and mumax3 -vet.",
     )
     scope = parser.parse_args().scope
     failures: list[str] = []

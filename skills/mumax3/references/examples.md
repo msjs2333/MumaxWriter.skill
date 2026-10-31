@@ -108,4 +108,4 @@ SaveAs(m, "m_dynamic_final.ovf")
 - Use SI units.
 - Save `regions` when region layout matters.
 - Use direct time-dependent expressions in API calls that accept functions.
-- Put production parameter sweeps in Python orchestration instead of embedding many cases in one `.mx3`.
+- Use native loops when each step continues from the preceding state; use external orchestration for independent cases. See [worked workflows](worked_workflows.md) for complete examples and analysis.

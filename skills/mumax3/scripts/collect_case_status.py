@@ -162,16 +162,16 @@ def summarize_case(case_dir: Path, root: Path, result_root: Path | None = None) 
 
     config_signature = first_value(
         params,
-        ("configuration_signature", "config_signature", "case_signature", "stage2_signature", "stage3_signature"),
+        ("configuration_signature", "config_signature", "case_signature"),
     )
     input_sha256 = first_value(
         params,
-        ("checkpoint_sha256", "static_input_sha256", "input_sha256", "h0_sha256"),
+        ("checkpoint_sha256", "static_input_sha256", "input_sha256"),
     )
-    dynamic_signature = first_value(params, ("dynamic_signature", "stage3_signature"))
+    dynamic_signature = first_value(params, ("dynamic_signature",))
     analysis_signature = first_value(analysis_record, ("analysis_signature", "signature"))
-    analysis_dynamic = first_value(analysis_record, ("dynamic_signature", "stage3_signature"))
-    review_dynamic = first_value(manual_review, ("dynamic_signature", "stage3_signature"))
+    analysis_dynamic = first_value(analysis_record, ("dynamic_signature",))
+    review_dynamic = first_value(manual_review, ("dynamic_signature",))
     review_analysis = first_value(manual_review, ("analysis_signature",))
 
     stale = False

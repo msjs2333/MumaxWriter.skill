@@ -21,6 +21,16 @@ This catalog maps repository-level evaluation prompts to expected outputs and ex
 | Vortex relaxation | [`write_vortex_relaxation.md`](../prompts/write_vortex_relaxation.md) | [`write_vortex_relaxation/`](../expected_outputs/write_vortex_relaxation/) | Evaluates disk geometry, vortex initialization, and output for later dynamics analysis. |
 | FMR or spin wave dynamics | [`write_fmr_or_spin_wave_case.md`](../prompts/write_fmr_or_spin_wave_case.md) | [`write_fmr_or_spin_wave_case/`](../expected_outputs/write_fmr_or_spin_wave_case/) | Evaluates relaxed-state staging, inline time-dependent excitation, output cadence, and Python-side analysis expectations. |
 
+## Installed worked workflows
+
+These teaching resources ship inside `skills/mumax3/`; the prompts remain external evaluation tasks. They add three independent capabilities rather than more texture initialization variants.
+
+| Capability | Evaluation prompt | Installed input, analysis and acceptance guide |
+| --- | --- | --- |
+| State-continuing field loop | [Continuous hysteresis](../prompts/continuation_hysteresis.md) | [Hysteresis](../../skills/mumax3/examples/hysteresis/README.md) |
+| Defined transient and reference comparison | [SP4](../prompts/standard_problem4.md) | [SP4 field 1](../../skills/mumax3/examples/standard_problem4/README.md) |
+| Simulation-to-spectrum analysis | [Macrospin FMR](../prompts/macrospin_fmr.md) | [Pulsed FMR](../../skills/mumax3/examples/fmr/README.md) |
+
 ## Template Parameter Examples
 
 Tracked parameter examples for runtime templates live under [`../template_params/`](../template_params/):
@@ -31,7 +41,7 @@ Tracked parameter examples for runtime templates live under [`../template_params
 
 ## Gap List For Later Phases
 
-- Hysteresis or Standard Problem style field sweep.
+- Standard Problem 2; SP4 field 2, independent reference data and mesh-convergence evidence.
 - Domain wall relaxation and propagation.
 - Periodic-boundary thin film.
 - Region-based material heterostructure beyond runtime templates.

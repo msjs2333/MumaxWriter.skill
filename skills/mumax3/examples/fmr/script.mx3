@@ -1,0 +1,38 @@
+// Pulsed macrospin FMR with demagnetization and anisotropy disabled.
+SetGridSize(1, 1, 1)
+SetCellSize(5e-9, 5e-9, 5e-9)
+EnableDemag = false
+Msat = 800e3
+Aex = 0
+Ku1 = 0
+alpha = 0.01
+GammaLL = 1.7595e11
+MaxErr = 1e-7
+bias := 0.1
+pulse := 1e-3
+pulseDuration := 50e-12
+samplePeriod := 5e-12
+nSamples := 2000
+B_ext = Vector(0, 0, bias)
+m = Uniform(0, 0, 1)
+Relax()
+SaveAs(m, "m_initial.ovf")
+
+B_ext = Vector(pulse, 0, bias)
+Run(pulseDuration)
+B_ext = Vector(0, 0, bias)
+TableAdd(B_ext)
+TableAddVar(bias, "bias_T", "T")
+TableAddVar(alpha.GetRegion(0), "damping", "1")
+TableAddVar(GammaLL, "gamma_rad_s_T", "rad/s/T")
+TableAddVar(pulseDuration, "pulse_s", "s")
+TableAddVar(samplePeriod, "sample_s", "s")
+TableAddVar(nSamples*samplePeriod, "observe_s", "s")
+SetSolver(4)
+FixDt = samplePeriod/10
+TableSave()
+for i:=0; i<nSamples; i++{
+    Steps(10)
+    TableSave()
+}
+SaveAs(m, "m_final.ovf")

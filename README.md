@@ -4,7 +4,7 @@
 
 A Codex skill project for helping AI agents write, review, parameterize, and maintain mumax3 `.mx3` simulation code.
 
-This repository contains a cleaned generic `mumax3` skill. Project-specific research material has been removed from the public snapshot; the installed skill path is kept generic for broader reuse.
+This repository contains a MuMax3 agent skill, reusable worked examples, and separate evaluation prompts.
 
 ## Repository Layout
 
@@ -40,10 +40,17 @@ MumaxWriter.skill/
         output_and_reproducibility.md
         compatibility_notes.md
         installation.md
+        worked_workflows.md
+        case_status.md
+      examples/
+        hysteresis/
+        standard_problem4/
+        fmr/
       scripts/
         check_mx3_static.py
         render_template.py
         collect_case_status.py
+        analyze_tutorial.py
         sync_local_skill.py
   docs/
     release_notes_v0.1.0.md
@@ -129,7 +136,7 @@ The validator uses only the Python standard library. The default full scope chec
 
 ## Current Status
 
-The current release is `v0.2.0`. It includes the generic workflow and optional helper improvements since v0.1.1, plus a separate MuMax3 installation guide. The installed skill path, templates and backed-up synchronization remain compatible.
+The latest published release is `v0.2.0`. This checkout adds installed [worked workflows](skills/mumax3/references/worked_workflows.md) for continuous hysteresis, field-1 Standard Problem 4 and pulsed macrospin FMR, with table analysis and explicit acceptance limits. Evaluation prompts remain under `examples/prompts/`; copying `skills/mumax3/` includes the teaching cases and analysis tool.
 
 These contracts are generic guidance and a validation surface. A research repository must implement and test the applicable
 state, lock, decision, output, and retention behavior locally; this skill update does not claim to migrate project task code

@@ -4,7 +4,7 @@
 
 MumaxWriter.skill は、AI agent が mumax3 の `.mx3` シミュレーションスクリプトを作成、レビュー、パラメータ化、保守するための Codex skill プロジェクトです。
 
-このリポジトリには、汎用化された `mumax3` skill が含まれています。プロジェクト固有の研究資料は公開用スナップショットから除外し、インストール対象の skill パスを汎用的な形に保っています。
+このリポジトリには MuMax3 agent skill、再利用可能な実例、独立した評価用プロンプトが含まれます。
 
 ## Repository Layout
 
@@ -40,10 +40,17 @@ MumaxWriter.skill/
         output_and_reproducibility.md
         compatibility_notes.md
         installation.md
+        worked_workflows.md
+        case_status.md
+      examples/
+        hysteresis/
+        standard_problem4/
+        fmr/
       scripts/
         check_mx3_static.py
         render_template.py
         collect_case_status.py
+        analyze_tutorial.py
         sync_local_skill.py
   docs/
     release_notes_v0.1.0.md
@@ -101,7 +108,7 @@ validator は Python standard library のみを使用します。既定の full 
 
 ## Current Status
 
-現在のリリースは `v0.2.0` です。v0.1.1 以降の汎用ワークフローと任意の helper の改善に加え、独立した MuMax3 インストールガイドを含みます。skill のインストール先、template、backup 付き同期は互換性を維持します。
+最新の公開リリースは `v0.2.0` です。現在のソースには、連続ヒステリシス、標準問題 SP4 の磁場 1、パルス励起 macrospin FMR の[実例](skills/mumax3/references/worked_workflows.md)と解析・判定基準を追加しています。`skills/mumax3/` のコピーには教材と解析ツールが含まれ、独立した評価課題は `examples/prompts/` に残ります。
 
 これらは汎用 guidance と validation surface です。各 research repository は state、lock、scientific decision、
 output、retention の必要な実装と test をローカルに持つ必要があり、この skill 更新だけで project task code や
