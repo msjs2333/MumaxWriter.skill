@@ -74,4 +74,4 @@ Optional layout-specific status collector (not a general MuMax output scanner):
 python skills\mumax3\scripts\collect_case_status.py runs\field_frequency_sweep --recursive --csv results\case_status.csv
 ```
 
-The collector discovers cases containing `params.json` or a top-level `.mx3`, and expects nested `*.out` outputs. `--result-root` supports its conventional analysis/manual-review JSON records; inspect `--help` before adopting those conventions. A standalone `.out` without source/params is not discovered. Reported freshness compares recorded signatures, not actual physics or file hashes. Use an existing task's status command when available.
+The collector discovers cases containing `params.json` or a top-level `.mx3`, and expects nested `*.out` outputs. `--result-root` supports its conventional analysis/manual-review JSON records; see [case_status.md](case_status.md) for its optional schema before adopting those conventions. A standalone `.out` without source/params is not discovered. Reported freshness compares recorded signatures, not actual physics or file hashes. Use an existing task's status command when available.

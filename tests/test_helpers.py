@@ -180,6 +180,19 @@ class StatusCollectorTests(unittest.TestCase):
                 self.assertEqual(rows[0]["derived_status"], "needs_review")
                 self.assertNotIn("run_record.json", rows[0]["error_message"])
 
+    def test_project_aliases_do_not_imply_comparable_provenance(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            case = Path(tmp)
+            (case / "params.json").write_text(json.dumps({"stage3_signature": "legacy", "h0_sha256": "input"}), encoding="utf-8")
+            (case / "analysis_record.json").write_text(json.dumps({"stage3_signature": "legacy"}), encoding="utf-8")
+            proc = run(str(COLLECTOR), str(case))
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        row = list(csv.DictReader(proc.stdout.splitlines()))[0]
+        self.assertEqual(row["dynamic_signature"], "")
+        self.assertEqual(row["input_sha256"], "")
+        self.assertEqual(row["config_signature"], "")
+        self.assertEqual(row["analysis_status"], "analysis_unverified")
+
     def test_out_only_root_reports_no_cases_on_stderr_without_csv_rows(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             base = Path(tmp)

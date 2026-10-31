@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.0 - 2026-10-31
+
+- Fixed the field/frequency generator so geometry, mesh, material, drive and sampling settings in `params.json` actually determine both scripts. Existing case directories are refused.
+- Added installed continuous-hysteresis, SP4 field-1 and pulsed-macrospin FMR tutorials, with observable extraction, explicit acceptance limits and independent evaluation prompts.
+- Added parameter-change regressions and synthetic analysis failure tests; documented actual engine runs separately from benchmark acceptance.
+- Unified continuation-versus-independent-sweep guidance and documented the optional collector schema. Removed project-specific signature aliases and obsolete maintenance audits containing private paths and research-template names.
+
 ## 0.2.0 - 2026-10-30
 
 ### Installation and documentation

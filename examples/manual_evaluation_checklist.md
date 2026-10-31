@@ -23,7 +23,7 @@ Use this checklist when running the prompts in `examples/prompts/` against the `
 - Records case parameters, units, generated script paths, expected output directories, and log paths.
 - Uses stable filenames inside isolated case directories.
 - Explains mumax3 `.out` output behavior when relevant.
-- Uses Python for batch orchestration instead of embedding a full sweep inside one `.mx3`.
+- Keeps state-continuing scans (such as hysteresis) in native loops; isolates independent parameter cases with external orchestration when useful.
 
 ## Physics And Scope
 

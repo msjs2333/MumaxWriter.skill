@@ -1,0 +1,39 @@
+// Continuous near-easy-axis macrospin loop; see README.md for its scope.
+SetGridSize(1, 1, 1)
+SetCellSize(5e-9, 5e-9, 5e-9)
+EnableDemag = false
+Msat = 800e3
+Aex = 0
+Ku1 = 50e3
+anisU = Vector(1, 0, 0)
+alpha = 0.5
+
+fieldLimit := 0.2
+nIntervals := 40
+fieldStep := 2*fieldLimit/nIntervals
+transverse := 0.001 // avoids an exactly collinear, zero-torque unstable state
+branch := -1
+B_ext = Vector(fieldLimit, transverse, 0)
+m = Uniform(1, 0.02, 0)
+Relax()
+SaveAs(m, "m_initial.ovf")
+
+TableAdd(B_ext)
+TableAdd(E_total)
+TableAddVar(branch, "branch", "1")
+TableAddVar(fieldLimit, "field_limit_T", "T")
+TableAddVar(fieldStep, "field_step_T", "T")
+TableAddVar(transverse, "transverse_T", "T")
+TableAddVar(2*Ku1.GetRegion(0)/Msat.GetRegion(0), "anisotropy_field_T", "T")
+for i:=0; i<=nIntervals; i++{
+    B_ext = Vector(fieldLimit-i*fieldStep, transverse, 0)
+    Relax()
+    TableSave()
+}
+branch = 1
+for i:=1; i<=nIntervals; i++{
+    B_ext = Vector(-fieldLimit+i*fieldStep, transverse, 0)
+    Relax()
+    TableSave()
+}
+SaveAs(m, "m_final.ovf")

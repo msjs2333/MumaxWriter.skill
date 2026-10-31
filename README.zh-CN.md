@@ -4,7 +4,7 @@
 
 这是一个 Codex skill 项目，用于帮助 AI agent 编写、审查、参数化和维护 mumax3 `.mx3` 微磁学仿真脚本。
 
-当前仓库包含一个已清理的通用 `mumax3` skill；项目专用研究材料已从公开快照中移除，安装版 skill 路径保持通用化。
+本仓库包含 MuMax3 agent skill、可复用的完整教学案例，以及独立的评估题。
 
 ## 仓库结构
 
@@ -40,14 +40,22 @@ MumaxWriter.skill/
         output_and_reproducibility.md
         compatibility_notes.md
         installation.md
+        worked_workflows.md
+        case_status.md
+      examples/
+        hysteresis/
+        standard_problem4/
+        fmr/
       scripts/
         check_mx3_static.py
         render_template.py
         collect_case_status.py
+        analyze_tutorial.py
         sync_local_skill.py
   docs/
     release_notes_v0.1.0.md
     release_notes_v0.2.0.md
+    release_notes_v0.3.0.md
     third_party_sources.md
     troubleshooting.md
   tests/
@@ -128,7 +136,7 @@ python tests\validate_release.py --scope helpers
 
 ## 当前状态
 
-当前版本为 `v0.2.0`，包含 v0.1.1 以来的通用工作流与可选助手改进，并新增独立的 MuMax3 安装指南。skill 安装路径、模板和带备份同步保持兼容。
+当前版本为 `v0.3.0`，新增[完整工作案例](skills/mumax3/references/worked_workflows.md)：连续磁滞、标准问题 SP4 的场 1，以及脉冲激励的宏自旋 FMR，包含数据分析与明确的验收边界。复制 `skills/mumax3/` 即包含教学案例和分析工具；独立评估题保留在 `examples/prompts/`。
 
 这些内容是通用指南和验证接口。具体研究仓库仍须在本地实现并测试适用的状态、锁、科学决策、输出和留存行为；
 本次通用 skill 更新不表示任何项目任务代码或项目数据已经迁移。
@@ -148,6 +156,7 @@ python tests\validate_release.py --scope helpers
 
 ## 参考文档
 
+- [v0.3.0 发行说明](docs/release_notes_v0.3.0.md)：参数一致性、随 skill 安装的建模与分析案例及验证范围。
 - [v0.2.0 发布说明](docs/release_notes_v0.2.0.md)
 - [v0.1.0 发布说明](docs/release_notes_v0.1.0.md)
 - [示例 catalog](examples/catalog/README.md)

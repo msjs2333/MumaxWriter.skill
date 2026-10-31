@@ -7,6 +7,8 @@ OVF/table output should be handled by a separate execution or analysis step.
 
 from __future__ import annotations
 
+import argparse
+import copy
 import json
 from pathlib import Path
 
@@ -38,19 +40,19 @@ def render_relax(params: dict) -> str:
     return f"""// Relaxation stage for {params["case_id"]}.
 OutputFormat = OVF2_TEXT
 
-nx := 256
-ny := 64
-nz := 1
-Lx := 768e-9
-Ly := 192e-9
-Lz := 2e-9
+nx := {params["mesh"]["nx"]}
+ny := {params["mesh"]["ny"]}
+nz := {params["mesh"]["nz"]}
+Lx := {params["geometry"]["length_m"]:.12g}
+Ly := {params["geometry"]["width_m"]:.12g}
+Lz := {params["geometry"]["thickness_m"]:.12g}
 SetGridSize(nx, ny, nz)
 SetCellSize(Lx/nx, Ly/ny, Lz/nz)
 SetGeom(Rect(Lx, Ly))
 
-Msat = 800e3
-Aex = 13e-12
-alpha = 0.01
+Msat = {params["material"]["Msat_A_per_m"]:.12g}
+Aex = {params["material"]["Aex_J_per_m"]:.12g}
+alpha = {params["material"]["alpha"]:.12g}
 
 B0 := {field_t:.12g}
 B_ext = Vector(B0, 0, 0)
@@ -60,7 +62,7 @@ TableAdd(m)
 TableAdd(B_ext)
 TableAdd(E_total)
 TableAdd(MaxAngle)
-TableAutoSave(5e-12)
+TableAutoSave({params["dynamics"]["table_period_s"]:.12g})
 
 Relax()
 SaveAs(m, "m_relaxed.ovf")
@@ -75,30 +77,32 @@ def render_dynamics(params: dict) -> str:
     return f"""// Dynamics stage for {params["case_id"]}.
 OutputFormat = OVF2_TEXT
 
-nx := 256
-ny := 64
-nz := 1
-Lx := 768e-9
-Ly := 192e-9
-Lz := 2e-9
+nx := {params["mesh"]["nx"]}
+ny := {params["mesh"]["ny"]}
+nz := {params["mesh"]["nz"]}
+Lx := {params["geometry"]["length_m"]:.12g}
+Ly := {params["geometry"]["width_m"]:.12g}
+Lz := {params["geometry"]["thickness_m"]:.12g}
 SetGridSize(nx, ny, nz)
 SetCellSize(Lx/nx, Ly/ny, Lz/nz)
 SetGeom(Rect(Lx, Ly))
 
-Msat = 800e3
-Aex = 13e-12
-alpha = 0.01
+Msat = {params["material"]["Msat_A_per_m"]:.12g}
+Aex = {params["material"]["Aex_J_per_m"]:.12g}
+alpha = {params["material"]["alpha"]:.12g}
 
 B0 := {field_t:.12g}
-h0 := 1e-3
+h0 := {params["excitation"]["amplitude_T"]:.12g}
 f := {frequency_hz:.12g}
 B_ext = Vector(B0, 0, 0)
 m.LoadFile("relax.out/m_relaxed.ovf")
 
 source := NewVectorMask(nx, ny, nz)
-for i:=0; i<8; i++{{
+for i:=0; i<{params["excitation"]["source_x_cells"]}; i++{{
     for j:=0; j<ny; j++{{
-        source.SetVector(i, j, 0, Vector(0, 1, 0))
+        for k:=0; k<nz; k++{{
+            source.SetVector(i, j, k, Vector(0, 1, 0))
+        }}
     }}
 }}
 B_ext.Add(source, h0*sin(2*pi*f*t))
@@ -106,24 +110,28 @@ B_ext.Add(source, h0*sin(2*pi*f*t))
 TableAdd(m)
 TableAdd(B_ext)
 TableAdd(E_total)
-TableAutoSave(5e-12)
-AutoSave(m, 20e-12)
+TableAutoSave({params["dynamics"]["table_period_s"]:.12g})
+AutoSave(m, {params["dynamics"]["snapshot_period_s"]:.12g})
 
-Run(2e-9)
+Run({params["dynamics"]["run_time_s"]:.12g})
 SaveAs(m, "m_dynamic_final.ovf")
 TableSave()
 """
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output", type=Path, default=ROOT)
+    args = parser.parse_args()
     for index, field_mt in enumerate(FIELDS_MT, start=1):
         for frequency_ghz in FREQUENCIES_GHZ:
             case_id = f"case_{index:04d}_field_{field_tag(field_mt)}_freq_{freq_tag(frequency_ghz)}"
-            case_dir = ROOT / case_id
-            (case_dir / "logs").mkdir(parents=True, exist_ok=True)
+            case_dir = args.output / case_id
+            case_dir.mkdir(parents=True, exist_ok=False)
+            (case_dir / "logs").mkdir()
             params = {
                 "case_id": case_id,
-                **BASE_PARAMS,
+                **copy.deepcopy(BASE_PARAMS),
                 "field_mT": field_mt,
                 "field_T": field_mt * 1e-3,
                 "frequency_GHz": frequency_ghz,
