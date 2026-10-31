@@ -59,6 +59,7 @@ MumaxWriter.skill/
     release_notes_v0.1.0.md
     release_notes_v0.2.0.md
     release_notes_v0.3.0.md
+    release_notes_v0.4.0.md
     third_party_sources.md
     troubleshooting.md
   tests/
@@ -112,9 +113,9 @@ validator は Python standard library のみを使用します。既定の full 
 
 ## Current Status
 
-現在のリリースは `v0.3.0` です。連続ヒステリシス、標準問題 SP4 の磁場 1、パルス励起 macrospin FMR の[実例](skills/mumax3/references/worked_workflows.md)と解析・判定基準を追加しています。`skills/mumax3/` のコピーには教材と解析ツールが含まれ、独立した評価課題は `examples/prompts/` に残ります。
+現在のリリースは `v0.4.0` です。連続ヒステリシス、標準問題 SP4 の磁場 1、パルス励起 macrospin FMR の[実例](skills/mumax3/references/worked_workflows.md)と解析・判定基準が含まれます。`skills/mumax3/` のコピーには教材と解析ツールが含まれ、独立した評価課題は `examples/prompts/` に残ります。
 
-現在のソースには[論文からの現象再構成](skills/mumax3/references/paper_reconstruction.md)も追加しています。対象の図から小さなモデルを作り、仮定を簡潔に記録し、現象と傾向を見て調整します。DMI による端部磁化の傾きの実例には、公開論文へのリンク、実行用スクリプト、空間プロファイル解析が含まれます。
+v0.4.0 には[論文からの現象再構成](skills/mumax3/references/paper_reconstruction.md)も追加しています。対象の図から小さなモデルを作り、仮定を簡潔に記録し、現象と傾向を見て調整します。DMI による端部磁化の傾きの実例には、公開論文へのリンク、実行用スクリプト、空間プロファイル解析が含まれます。
 
 これらは汎用 guidance と validation surface です。各 research repository は state、lock、scientific decision、
 output、retention の必要な実装と test をローカルに持つ必要があり、この skill 更新だけで project task code や
@@ -133,6 +134,7 @@ Planned directions for later releases:
 
 ## References
 
+- [Release notes v0.4.0](docs/release_notes_v0.4.0.md): 探索的な論文現象の再構成と DMI 端部磁化の実例。
 - [Release notes v0.3.0](docs/release_notes_v0.3.0.md): パラメータ整合性、教材と解析、および検証範囲。
 - [Release notes v0.2.0](docs/release_notes_v0.2.0.md)
 - [Release notes v0.1.0](docs/release_notes_v0.1.0.md)

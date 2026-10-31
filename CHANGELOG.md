@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.4.0 - 2026-10-31
 
 - Added optional paper-to-phenomenon guidance, defaulting to small exploratory models with brief assumptions and targeted adjustment.
 - Added a public-paper DMI edge-canting reconstruction with independent MuMax3 input, OVF profile extraction/plotting, and a short record of an actual GPU run.
