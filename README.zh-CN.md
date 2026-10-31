@@ -41,16 +41,19 @@ MumaxWriter.skill/
         compatibility_notes.md
         installation.md
         worked_workflows.md
+        paper_reconstruction.md
         case_status.md
       examples/
         hysteresis/
         standard_problem4/
+        paper_edge_canting/
         fmr/
       scripts/
         check_mx3_static.py
         render_template.py
         collect_case_status.py
         analyze_tutorial.py
+        analyze_edge_canting.py
         sync_local_skill.py
   docs/
     release_notes_v0.1.0.md
@@ -137,6 +140,8 @@ python tests\validate_release.py --scope helpers
 ## 当前状态
 
 当前版本为 `v0.3.0`，新增[完整工作案例](skills/mumax3/references/worked_workflows.md)：连续磁滞、标准问题 SP4 的场 1，以及脉冲激励的宏自旋 FMR，包含数据分析与明确的验收边界。复制 `skills/mumax3/` 即包含教学案例和分析工具；独立评估题保留在 `examples/prompts/`。
+
+当前源码还加入[从论文到现象重建](skills/mumax3/references/paper_reconstruction.md)：从目标图出发，用简短标注的合理假设构建小模型，再根据现象和趋势调整。安装包内的 DMI 边缘倾斜示范包含公开论文来源、可运行脚本和空间分布分析。
 
 这些内容是通用指南和验证接口。具体研究仓库仍须在本地实现并测试适用的状态、锁、科学决策、输出和留存行为；
 本次通用 skill 更新不表示任何项目任务代码或项目数据已经迁移。

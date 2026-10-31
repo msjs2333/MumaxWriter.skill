@@ -41,16 +41,19 @@ MumaxWriter.skill/
         compatibility_notes.md
         installation.md
         worked_workflows.md
+        paper_reconstruction.md
         case_status.md
       examples/
         hysteresis/
         standard_problem4/
+        paper_edge_canting/
         fmr/
       scripts/
         check_mx3_static.py
         render_template.py
         collect_case_status.py
         analyze_tutorial.py
+        analyze_edge_canting.py
         sync_local_skill.py
   docs/
     release_notes_v0.1.0.md
@@ -110,6 +113,8 @@ validator は Python standard library のみを使用します。既定の full 
 ## Current Status
 
 現在のリリースは `v0.3.0` です。連続ヒステリシス、標準問題 SP4 の磁場 1、パルス励起 macrospin FMR の[実例](skills/mumax3/references/worked_workflows.md)と解析・判定基準を追加しています。`skills/mumax3/` のコピーには教材と解析ツールが含まれ、独立した評価課題は `examples/prompts/` に残ります。
+
+現在のソースには[論文からの現象再構成](skills/mumax3/references/paper_reconstruction.md)も追加しています。対象の図から小さなモデルを作り、仮定を簡潔に記録し、現象と傾向を見て調整します。DMI による端部磁化の傾きの実例には、公開論文へのリンク、実行用スクリプト、空間プロファイル解析が含まれます。
 
 これらは汎用 guidance と validation surface です。各 research repository は state、lock、scientific decision、
 output、retention の必要な実装と test をローカルに持つ必要があり、この skill 更新だけで project task code や

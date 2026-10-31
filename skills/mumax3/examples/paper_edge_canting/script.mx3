@@ -1,0 +1,38 @@
+// Exploratory reconstruction of Rohart & Thiaville (2013), Fig. 1 / Sec. III A.
+// Local effective-anisotropy model, invariant along y; lengths in SI.
+OutputFormat = OVF2_TEXT
+nx := 128
+width := 100e-9
+SetGridSize(nx, 1, 1)
+SetCellSize(width/nx, 1e-9, 1e-9)
+SetPBC(0, 1, 0)
+EnableDemag = false
+OpenBC = false
+Msat = 1.1e6
+Aex = 16e-12
+Ku1 = 510e3
+anisU = Vector(0, 0, 1)
+alpha = 0.5
+B_ext = Vector(0, 0, 0)
+
+caseIndex := 0
+dValue := 0.0
+TableAddVar(caseIndex, "case_index", "1")
+TableAddVar(dValue, "D_paper_J_m2", "J/m2")
+TableAddVar(Aex.GetRegion(0), "A_J_m", "J/m")
+TableAddVar(Ku1.GetRegion(0), "K_J_m3", "J/m3")
+TableAddVar(Dind.GetRegion(0), "Dind_J_m2", "J/m2")
+TableAdd(E_total)
+for caseIndex = 0; caseIndex < 4; caseIndex++ {
+    dValue = 0
+    if caseIndex == 1 { dValue = 1.5e-3 }
+    if caseIndex == 2 { dValue = 3e-3 }
+    if caseIndex == 3 { dValue = -3e-3 }
+    // Match the sign of the paper's Eq. (2); MuMax3 uses the opposite convention.
+    Dind = -dValue
+    // Independent preparations, not a continuation sweep.
+    m = Uniform(0, 0, 1)
+    Relax()
+    SaveAs(m, sprintf("m_case_%d.ovf", caseIndex))
+    TableSave()
+}

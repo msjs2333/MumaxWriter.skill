@@ -25,6 +25,7 @@ HELPER_SCRIPTS = [
     SKILL / "scripts" / "collect_case_status.py",
     SKILL / "scripts" / "sync_local_skill.py",
     SKILL / "scripts" / "analyze_tutorial.py",
+    SKILL / "scripts" / "analyze_edge_canting.py",
     ROOT / "examples" / "expected_outputs" / "parameterize_field_frequency_sweep" / "generate_field_frequency_sweep.py",
 ]
 

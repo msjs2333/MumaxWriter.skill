@@ -28,3 +28,7 @@ This repository uses external projects as documentation and coverage references.
 For `v0.1.0`, `api_full.md` is kept in the repository as a sparse identifier/signature index with clear provenance. It is not a replacement for official mumax3 API documentation.
 
 Future versions may replace it with a generator or a smaller original summary if maintenance or licensing requirements change.
+
+## Paper reconstruction example
+
+The [edge-canting example](../skills/mumax3/examples/paper_edge_canting/README.md) uses physical parameters and the selected phenomenon from Rohart & Thiaville, Phys. Rev. B 88, 184422 (2013), [public full text](https://arxiv.org/html/1310.0666v1), Sections II and III A / Fig. 1. The repository supplies its own MuMax3 implementation, analysis and plot generation; it does not redistribute the article, its figures or other authors' code. See the example for parameter choices and the mapping to MuMax3's DMI convention.

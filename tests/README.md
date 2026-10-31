@@ -26,7 +26,7 @@ python tests\validate_release.py --scope helpers
 
 ## Workflow validation evidence
 
-CPU regressions change generator parameters, check all six generated cases against their JSON and tracked representative, protect existing case files, and test analysis against synthetic valid/corrupt signals. Synthetic reference comparisons do not establish physics. The full check vets all ten concrete example scripts; ordinary MuMax3 `-vet` initializes CUDA and compiles scripts, without evaluating simulation or input-file loads.
+CPU regressions change generator parameters, check all six generated cases against their JSON and tracked representative, protect existing case files, and test analysis against synthetic valid/corrupt signals. Synthetic reference comparisons do not establish physics. The full check vets all concrete example scripts; ordinary MuMax3 `-vet` initializes CUDA and compiles scripts, without evaluating simulation or input-file loads.
 
 The three installed tutorial scripts were also executed with MuMax3 3.12 (commit `6e5c98bb`, CUDA 12.9) on an NVIDIA RTX 5060 Laptop GPU on 2026-10-31. Each execution had a 60-second timeout and a fresh output directory. All exited successfully and their native tables passed the tutorial analyzer:
 
@@ -37,3 +37,5 @@ The three installed tutorial scripts were also executed with MuMax3 3.12 (commit
 | Pulsed FMR | 16.6 s | Peak 2.798601 GHz; analytic 2.800051 GHz, tolerance 0.2 GHz | Isotropic macrospin frequency |
 
 No mesh/timestep convergence study or independent SP4 solution comparison was performed. Snapshot checks in the analyzer inspect existence and OVF header, not the complete spatial field. The guides define further checks; these results do not claim those checks were run.
+
+The paper-reconstruction case adds a four-preparation, 128-cell DMI edge-profile run. It completed in 3.72 s under the same MuMax3/GPU versions on 2026-10-31. Native OVFs showed increasing edge tilt for D = 0, 1.5 and 3 mJ/m² and reversed tilt for negative D; see its [short result note](../skills/mumax3/examples/paper_edge_canting/README.md). The analyzer reports profiles and measurements without applying a reproduction score. CPU tests exercise synthetic OVF parsing, coordinate/parameter handling and CSV/SVG generation, not the paper's physics.
