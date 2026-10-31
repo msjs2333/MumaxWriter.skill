@@ -55,6 +55,7 @@ MumaxWriter.skill/
   docs/
     release_notes_v0.1.0.md
     release_notes_v0.2.0.md
+    release_notes_v0.3.0.md
     third_party_sources.md
     troubleshooting.md
   tests/
@@ -136,7 +137,7 @@ The validator uses only the Python standard library. The default full scope chec
 
 ## Current Status
 
-The latest published release is `v0.2.0`. This checkout adds installed [worked workflows](skills/mumax3/references/worked_workflows.md) for continuous hysteresis, field-1 Standard Problem 4 and pulsed macrospin FMR, with table analysis and explicit acceptance limits. Evaluation prompts remain under `examples/prompts/`; copying `skills/mumax3/` includes the teaching cases and analysis tool.
+The current release is `v0.3.0`. It includes installed [worked workflows](skills/mumax3/references/worked_workflows.md) for continuous hysteresis, field-1 Standard Problem 4 and pulsed macrospin FMR, with table analysis and explicit acceptance limits. Evaluation prompts remain under `examples/prompts/`; copying `skills/mumax3/` includes the teaching cases and analysis tool.
 
 These contracts are generic guidance and a validation surface. A research repository must implement and test the applicable
 state, lock, decision, output, and retention behavior locally; this skill update does not claim to migrate project task code
@@ -157,6 +158,7 @@ Planned directions for later releases:
 
 ## Documentation
 
+- [Release notes v0.3.0](docs/release_notes_v0.3.0.md): parameter consistency, installed modeling/analysis cases and validation scope.
 - [Release notes v0.2.0](docs/release_notes_v0.2.0.md): MuMax3 setup guidance and skill maintenance updates.
 - [Release notes v0.1.0](docs/release_notes_v0.1.0.md): initial public snapshot scope, compatibility, validation status, and known limitations.
 - [Example catalog](examples/catalog/README.md): prompts, expected outputs, and coverage map.

@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.3.0 - 2026-10-31
 
 - Fixed the field/frequency generator so geometry, mesh, material, drive and sampling settings in `params.json` actually determine both scripts. Existing case directories are refused.
 - Added installed continuous-hysteresis, SP4 field-1 and pulsed-macrospin FMR tutorials, with observable extraction, explicit acceptance limits and independent evaluation prompts.
