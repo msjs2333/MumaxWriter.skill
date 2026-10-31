@@ -23,13 +23,14 @@ This catalog maps repository-level evaluation prompts to expected outputs and ex
 
 ## Installed worked workflows
 
-These teaching resources ship inside `skills/mumax3/`; the prompts remain external evaluation tasks. They add three independent capabilities rather than more texture initialization variants.
+These teaching resources ship inside `skills/mumax3/`; the prompts remain external evaluation tasks. They cover distinct modeling and analysis capabilities.
 
 | Capability | Evaluation prompt | Installed input, analysis and acceptance guide |
 | --- | --- | --- |
 | State-continuing field loop | [Continuous hysteresis](../prompts/continuation_hysteresis.md) | [Hysteresis](../../skills/mumax3/examples/hysteresis/README.md) |
 | Defined transient and reference comparison | [SP4](../prompts/standard_problem4.md) | [SP4 field 1](../../skills/mumax3/examples/standard_problem4/README.md) |
 | Simulation-to-spectrum analysis | [Macrospin FMR](../prompts/macrospin_fmr.md) | [Pulsed FMR](../../skills/mumax3/examples/fmr/README.md) |
+| Paper figure to minimal model | [Reconstruct edge canting](../prompts/reconstruct_paper_phenomenon.md) | [Paper edge-canting reconstruction](../../skills/mumax3/examples/paper_edge_canting/README.md) |
 
 ## Template Parameter Examples
 

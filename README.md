@@ -41,21 +41,25 @@ MumaxWriter.skill/
         compatibility_notes.md
         installation.md
         worked_workflows.md
+        paper_reconstruction.md
         case_status.md
       examples/
         hysteresis/
         standard_problem4/
+        paper_edge_canting/
         fmr/
       scripts/
         check_mx3_static.py
         render_template.py
         collect_case_status.py
         analyze_tutorial.py
+        analyze_edge_canting.py
         sync_local_skill.py
   docs/
     release_notes_v0.1.0.md
     release_notes_v0.2.0.md
     release_notes_v0.3.0.md
+    release_notes_v0.4.0.md
     third_party_sources.md
     troubleshooting.md
   tests/
@@ -137,7 +141,9 @@ The validator uses only the Python standard library. The default full scope chec
 
 ## Current Status
 
-The current release is `v0.3.0`. It includes installed [worked workflows](skills/mumax3/references/worked_workflows.md) for continuous hysteresis, field-1 Standard Problem 4 and pulsed macrospin FMR, with table analysis and explicit acceptance limits. Evaluation prompts remain under `examples/prompts/`; copying `skills/mumax3/` includes the teaching cases and analysis tool.
+The current release is `v0.4.0`. It includes installed [worked workflows](skills/mumax3/references/worked_workflows.md) for continuous hysteresis, field-1 Standard Problem 4 and pulsed macrospin FMR, with table analysis and explicit acceptance limits. Evaluation prompts remain under `examples/prompts/`; copying `skills/mumax3/` includes the teaching cases and analysis tool.
+
+Version 0.4.0 adds [paper-to-phenomenon reconstruction](skills/mumax3/references/paper_reconstruction.md): start from a target figure, build a small model with brief assumptions, and adjust toward the observed effect. An installed DMI edge-canting example links a public paper to runnable input and spatial-profile analysis.
 
 These contracts are generic guidance and a validation surface. A research repository must implement and test the applicable
 state, lock, decision, output, and retention behavior locally; this skill update does not claim to migrate project task code
@@ -158,6 +164,7 @@ Planned directions for later releases:
 
 ## Documentation
 
+- [Release notes v0.4.0](docs/release_notes_v0.4.0.md): exploratory paper reconstruction and the DMI edge-canting example.
 - [Release notes v0.3.0](docs/release_notes_v0.3.0.md): parameter consistency, installed modeling/analysis cases and validation scope.
 - [Release notes v0.2.0](docs/release_notes_v0.2.0.md): MuMax3 setup guidance and skill maintenance updates.
 - [Release notes v0.1.0](docs/release_notes_v0.1.0.md): initial public snapshot scope, compatibility, validation status, and known limitations.

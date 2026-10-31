@@ -20,7 +20,7 @@ def require(condition: bool, message: str) -> None:
         raise ValueError(message)
 
 
-def read_table(path: Path) -> list[dict[str, float]]:
+def read_table(path: Path, *, min_rows: int = 3) -> list[dict[str, float]]:
     lines = path.read_text(encoding="utf-8-sig").splitlines()
     require(bool(lines) and lines[0].startswith("#"), "missing MuMax table header")
     names = [part.strip().split(" (")[0] for part in lines[0].lstrip("# ").split("\t")]
@@ -33,7 +33,7 @@ def read_table(path: Path) -> list[dict[str, float]]:
         require(len(values) == len(names), f"ragged table row {number}")
         require(all(math.isfinite(v) for v in values), f"non-finite table row {number}")
         rows.append(dict(zip(names, values)))
-    require(len(rows) >= 3, "need at least three table rows")
+    require(len(rows) >= min_rows, f"need at least {min_rows} table rows")
     for row in rows:
         require(all(k in row for k in ("t", "mx", "my", "mz")), "missing time/magnetization columns")
         require(sum(row[k]**2 for k in ("mx", "my", "mz")) <= 1.01**2,

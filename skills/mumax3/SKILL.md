@@ -1,6 +1,6 @@
 ---
 name: mumax3
-description: Write, review, debug, and parameterize MuMax3 .mx3 simulations, including geometry, materials, fields, initial states, OVF output, and Python batch workflows.
+description: Write, review, debug, and parameterize MuMax3 .mx3 simulations, including geometry, materials, fields, initial states, OVF output, Python batch workflows, and paper-guided phenomenon reconstruction.
 metadata:
   short-description: Write and parameterize mumax3 scripts
 ---
@@ -17,6 +17,7 @@ Read the target script and relevant task instructions. Use current source and in
 - **Syntax uncertainty:** use [language_subset.md](references/language_subset.md) and [anti_patterns.md](references/anti_patterns.md). MuMax3 is Go-like, not full Go. Do not redeclare built-ins such as `mu0`, `t`, `m`, or `B_ext`.
 - **Missing/disputed API:** search [api_full.md](references/api_full.md); consult [compatibility_notes.md](references/compatibility_notes.md) and the official API for version-sensitive behavior. Do not invent identifiers.
 - **Model-specific help:** choose [structures.md](references/structures.md) or [examples.md](references/examples.md).
+- **Rebuild a phenomenon from a paper or figure:** use [paper_reconstruction.md](references/paper_reconstruction.md); start with an exploratory model and the main trend.
 - **Complete modeling and analysis examples:** use [worked_workflows.md](references/worked_workflows.md) for continuous hysteresis, Standard Problem 4, and macrospin FMR, including output checks and parameter changes.
 - **Output or sampling design:** use [output_and_reproducibility.md](references/output_and_reproducibility.md).
 - **Parameter scans:** use [parameter_sweep.md](references/parameter_sweep.md) to choose native sequential sweeps or external case orchestration.
